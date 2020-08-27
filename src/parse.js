@@ -13,11 +13,12 @@ fs.readFileSync(fn, 'utf-8').split('\n').forEach((l) => {
     if (!dict[w]) dict[w] = [];
     dict[w][id && +id || 0] = phs.map((ph) => {
       const [, p, s] = ph.match(/^([A-Z][A-Z]?)([0-2]?)$/);
-      return {
+      const o = {
         phoneme: p,
-        stress: +s,
         isVowel: vowels.includes(p),
       };
+      if (o.isVowel) o.stress = +s;
+      return o;
     });
   } catch (e) {
     console.error('Error on line', l);

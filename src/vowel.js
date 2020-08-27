@@ -117,8 +117,12 @@ function nasalize(phs) {
   const res = [];
   for (let pi = 0; pi < phs.length; pi++) {
     const p = phs[pi];
-    const nasal = p.isVowel && pi < phs.length - 1 && nasalPhonemes.includes(phs[pi + 1].phoneme);
-    res.push({ ...p, nasal });
+    if (p.isVowel) {
+      const nasal = p.isVowel && pi < phs.length - 1 && nasalPhonemes.includes(phs[pi + 1].phoneme);
+      res.push({ ...p, nasal });
+    } else {
+      res.push(p);
+    }
   }
   return res;
 }
