@@ -71,7 +71,7 @@ function tensing(phs, word, reflex) {
           res.push({ property: 'lax', ...p, pho: 'ae' }); break;
         }
         // Before a pre-vocalic consonant
-        if (phsR[pi + 2] && phsR[pi + 2].isVowel) {
+        if (pi < phsR.length - 2 && phsR[pi + 2].isVowel) {
           res.push({ property: 'lax', ...p, pho: 'ae' }); break;
         }
         // Check what the consonant is

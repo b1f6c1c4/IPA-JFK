@@ -6,7 +6,7 @@ function round(phs) {
   const res = [];
   for (let pi = 0; pi < phs.length; pi++) {
     const p = phs[pi];
-    let round;
+    let round = false;
     round |= roundedPhonemes.includes(p.phoneme);
     round |= pi < phs.length - 1 && roundPhonemes.includes(phs[pi + 1].phoneme);
     res.push({ ...p, round });
