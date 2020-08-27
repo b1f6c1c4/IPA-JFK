@@ -1,15 +1,18 @@
 const roundedPhonemes = ['CH', 'JH', 'SH', 'JH', 'R'];
 const roundPhonemes = ['CH', 'JH', 'SH', 'JH', 'R', 'W'];
 
-function round(phs) {
+function labializeAndRetract(phs) {
   if (!phs) return phs;
   const res = [];
   for (let pi = 0; pi < phs.length; pi++) {
     const p = phs[pi];
-    let round = false;
-    round |= roundedPhonemes.includes(p.phoneme);
-    round |= pi < phs.length - 1 && roundPhonemes.includes(phs[pi + 1].phoneme);
-    res.push({ ...p, round });
+    let labialized = false;
+    labialized |= roundedPhonemes.includes(p.phoneme);
+    labialized |= pi < phs.length - 1 && roundPhonemes.includes(phs[pi + 1].phoneme);
+    let retracted = false;
+    retracted |= p.phoneme === 'R';
+    retracted |= ['T', 'D'].includes(p.phoneme) && pi < phs.length - 1 && phs[pi + 1].phoneme === 'R';
+    res.push({ ...p, labialized, retracted });
   }
   return res;
 }
@@ -71,12 +74,12 @@ function mergingElide(phs, word) {
     switch (p.pho) {
       case 't':
         if (pi && pi < phs.length - 1 && phs[pi - 1].pho === 'n'
-          && phs[pi + 1].isVowel && phs[pi + 1].stress)
+          && phs[pi + 1].isVowel && !phs[pi + 1].stress)
           continue;
         break;
       case 'd': // TODO: Confirm nd+V0 -> n+V0
         if (pi && pi < phs.length - 1 && phs[pi - 1].pho === 'n'
-          && phs[pi + 1].isVowel && phs[pi + 1].stress)
+          && phs[pi + 1].isVowel && !phs[pi + 1].stress)
           continue;
         break;
       case 'h':
@@ -110,7 +113,7 @@ const secondPhos = {
   k: ['l', 'r', 'w', 'j'],
 };
 
-function voiceOnsetTime(phs) {
+function release(phs) {
   if (!phs) return phs;
   const res = [];
   for (let pi = 0; pi < phs.length; pi++) {
@@ -141,7 +144,7 @@ function voiceOnsetTime(phs) {
           aspirate = 0.5;
           silent = false;
         }
-        res.push({ ...p, aspirate, silent });
+        res.push({ release: silent ? 'silent' : undefined, ...p, aspirate });
         break;
       case 'b':
       case 'd':
@@ -158,12 +161,28 @@ function voiceOnsetTime(phs) {
         devoiced = pi && voicelessPhos.includes(phs[pi - 1].pho);
         silent = ['n', 'N'].includes(p.pho) && pi === phs.length - 1;
         raise = p.pho === 'r' && pi && ['t', 'd'].includes(phs[pi - 1].pho);
-        res.push({ ...p, devoiced, silent, raise });
+        res.push({ release: silent ? 'silent' : undefined, ...p, devoiced, raise });
         break;
       default:
         res.push(p);
         break;
     }
+  }
+  return res;
+}
+
+function flap(phs) {
+  if (!phs) return phs;
+  const res = [];
+  for (let pi = 0; pi < phs.length; pi++) {
+    const p = phs[pi];
+    if (['t', 'd'].includes(p.pho)) {
+      if (pi && phs[pi - 1].isVowel && pi < phs.length - 1 && phs[pi + 1].isVowel && !phs[pi + 1].stress) {
+        res.push({ ...p, pho: 'R' });
+        continue;
+      }
+    }
+    res.push(p);
   }
   return res;
 }
@@ -185,11 +204,12 @@ function mergeAffricates(phs) {
 }
 
 module.exports = (phs, word) => {
-  const phs1 = round(phs);
+  const phs1 = labializeAndRetract(phs);
   const phs2 = splitAffricates(phs1);
   const phs3 = mergingElide(phs2, word);
-  const phs4 = voiceOnsetTime(phs3);
-  const phs5 = mergeAffricates(phs4);
-  return phs5;
+  const phs4 = release(phs3);
+  const phs5 = flap(phs4);
+  const phs6 = mergeAffricates(phs5);
+  return phs6;
 };
 module.exports.default = module.exports;

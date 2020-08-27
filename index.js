@@ -4,9 +4,15 @@ const vowel = require('./src/vowel');
 const consonant = require('./src/consonant');
 
 function ir(w) {
-  let phs = parse[w.toUpperCase()][0];
-  phs = vowel(phs, w, (v) => parse[v][0]);
-  phs = consonant(phs, w, (v) => parse[v][0]);
+  const wu = w.toUpperCase();
+  const ref = (v) => {
+    const wx = parse[v.toUpperCase()];
+    if (!wx) return undefined;
+    return wx[0];
+  };
+  let phs = parse[wu][0];
+  phs = vowel(phs, wu, ref);
+  phs = consonant(phs, wu, ref);
   return phs;
 }
 
@@ -34,7 +40,7 @@ const vowelLaTeX = {
   U: { lax: '\\"U', laxWeak: '8' },
 };
 const consonantLaTeX = {
-  r: '\\textsubbar{\\*r}',
+  r: '\\*r',
   c: '\\c{c}',
 };
 
@@ -51,19 +57,21 @@ function latexEncode(phs) {
         } else {
           s = consonantLaTeX[p.pho] || p.pho;
         }
-        if (p.raise)
-          s = `\\textraising{${s}}`;
         if (p.devoiced)
           s = `\\r{${s}}`;
         if (p.nasal)
           s = `\\~{${s}}`;
-        if (p.silent)
+        if (p.retracted)
+          s = `\\textsubbar{${s}}`;
+        if (p.raise)
+          s = `\\textraising{${s}}`;
+        if (p.release === 'silent')
           s += '\\textcorner{}';
         {
           let sup = '';
           if (p.aspirate > 0.7)
             sup += 'h';
-          if (p.round)
+          if (p.labialized)
             sup += 'w';
           if (sup)
             s += `\\super{${sup}}`;
