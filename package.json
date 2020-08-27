@@ -30,6 +30,7 @@
   },
   "homepage": "https://github.com/b1f6c1c4/IPA-JFK#readme",
   "dependencies": {
+    "natural": "^2.1.5",
     "yargs": "^15.4.1"
   },
   "devDependencies": {
