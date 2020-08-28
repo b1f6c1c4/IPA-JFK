@@ -22,7 +22,6 @@ function utf8Encode(r) {
   // TODO
 }
 
-// TODO: cure v.s. tour
 const vowelLaTeX = {
   ae: { tense: 'e\\textsubarch{@}', lax: '\\ae{}' },
   aI: { tense: '\\|+A\\textsubarch{I}' },
@@ -38,8 +37,8 @@ const vowelLaTeX = {
   oU: { tense: '\\|`o\\textsubarch{U}' },
   OI: { tense: '\\|`o\\textsubarch{I}' },
   O: { tense: 'O\\texsubarch{@}', rhotic: '\\|`o\\textsubarch{@}\\textrhoticity', lax: 'O\\textsubarch{@}' },
-  u: { tense: 'U\\textsubarch{u}', tenseWeak: 'U\textsubarch{u}', rhotic: '\\|`o\\textsubarch{@}\\textrhoticity' },
-  U: { lax: '\\"U', laxWeak: '8' },
+  u: { tense: 'U\\textsubarch{u}', tenseWeak: 'U\textsubarch{u}' },
+  U: { rhotic: 'U\\textsubarch{@}\\textrhoticity', lax: '\\"U', laxWeak: '8' },
 };
 const consonantLaTeX = {
   l: '\\|]l',
@@ -49,11 +48,15 @@ const consonantLaTeX = {
 
 function latexEncode(phs) {
   let state = 'coda';
-  function enc(ph) {
+  function enc(ph, split) {
+    let rxp = '';
     let rx = '';
+    let rxs = '';
     for (let p of ph) {
       if (Array.isArray(p)) {
-        rx += `\\t{${enc(p)}}`;
+        const [pre, s, sup] = enc(p, true);
+        rx += `${pre}\\t{${s}}`;
+        if (sup) rx += `\\super{${sup}}`;
       } else {
         let s;
         if (p.isVowel) {
@@ -75,21 +78,18 @@ function latexEncode(phs) {
           s = `\\s{${s}}`;
         if (p.release === 'silent')
           s += '\\textcorner{}';
-        {
-          let sup = '';
-          if (p.release === 'nasal')
-            sup += 'n';
-          else if (p.release === 'labial')
-            sup += 'l';
-          if (p.aspirate > 0.7)
-            sup += 'h';
-          if (p.labialized)
-            sup += 'w';
-          if (sup)
-            s += `\\super{${sup}}`;
-        }
         if (p.glottalized)
           s = 'P' + s;
+        let sup = '';
+        if (p.release === 'nasal')
+          sup += 'n';
+        else if (p.release === 'labial')
+          sup += 'l';
+        if (p.aspirate > 0.7)
+          sup += 'h';
+        if (p.labialized)
+          sup += 'w';
+        let sp = '';
         switch (state) {
           case 'onset':
             state = p.phono;
@@ -97,18 +97,30 @@ function latexEncode(phs) {
           case 'coda':
           case 'nucleus':
             if (p.phono !== 'coda') {
-              rx += ' ';
+              sp = ' ';
               if (p.stress === 1)
-                rx += '"';
+                sp += '"';
               else if (p.stress === 2)
-                rx += '""';
+                sp += '""';
             }
             state = p.phono;
             break;
         }
+        if (!split)
+          rx += sp;
+        else
+          rxp += sp;
         rx += s;
+        if (sup) {
+          if (split)
+            rxs += sup;
+          else
+            rx += `\\super{${sup}}`;
+        }
       }
     }
+    if (split)
+      return [rxp, rx.trim(), rxs.replace(/ww/, 'w')];
     return rx.trim();
   }
   return `\\textipa{${enc(phs)}}`;

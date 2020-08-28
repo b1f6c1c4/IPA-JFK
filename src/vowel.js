@@ -4,10 +4,11 @@ const maybeRhotic = ['AA', 'EH', /* 'ER', */ 'IH', 'AO', 'UH'];
 function rhoticize(phs) {
   if (!phs) return phs;
   const res = [];
+  let isY = false;
   let state = null;
   for (let p of phs) {
     if (!state) {
-      if (p.isVowel && maybeRhotic.includes(p))
+      if (p.isVowel && maybeRhotic.includes(p.phoneme))
         state = p;
       else
         res.push(p);
@@ -16,13 +17,21 @@ function rhoticize(phs) {
         res.push(state);
         state = p;
       } else if (p.phoneme === 'R') {
-        res.push({ ...state, property: 'rhotic' });
+        // cure-force merger
+        if (state.phoneme === 'UH' && !isY) {
+          res.push({ ...state, pho: 'O', property: 'rhotic' });
+        } else {
+          res.push({ ...state, property: 'rhotic' });
+        }
+        state = null;
       } else {
         res.push(state);
         res.push(p);
         state = null;
       }
     }
+    if (!p.isVowel)
+      isY = p.phoneme === 'Y';
   }
   if (state)
     res.push(state);
@@ -103,7 +112,8 @@ function tensing(phs, word, reflex) {
       // Note: Due to cot-thought merger, tense AO and lax AO are identical.
       case 'AO': res.push({ property: 'tense',  ...p, pho: 'O' }); break;
       case 'UW': res.push({ property: 'tense',  ...p, pho: 'u', weak: !p.stress }); break;
-      case 'UH': res.push({ property: 'lax',    ...p, pho: 'u' }); break;
+      // Note: Due to cure-force merger, rhotic UH (not after /j/) becomes rhotic /O/
+      case 'UH': res.push({ property: 'lax',    pho: 'U', ...p }); break;
       default: res.push(p); break;
     }
   }

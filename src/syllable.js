@@ -155,7 +155,7 @@ function syllabify(phs) {
       }
       if (pos && pos < int.length) {
         if (badSplit.includesX([int[pos - 1].phoneme, int[pos].phoneme])) {
-          fit -= 5.0;
+          fit -= 114514;
         }
         if (int[pos].phoneme === 'Y') {
           fit -= 1.5;
