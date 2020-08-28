@@ -1,7 +1,7 @@
 const roundedPhonemes = ['CH', 'JH', 'SH', 'JH', 'R'];
 const roundPhonemes = ['CH', 'JH', 'SH', 'JH', 'R', 'W'];
 
-function labializeAndRetract(phs) {
+function labializeRetractVelarize(phs, word) {
   if (!phs) return phs;
   const res = [];
   for (let pi = 0; pi < phs.length; pi++) {
@@ -12,7 +12,19 @@ function labializeAndRetract(phs) {
     let retracted = false;
     retracted |= p.phoneme === 'R';
     retracted |= ['T', 'D'].includes(p.phoneme) && pi < phs.length - 1 && phs[pi + 1].phoneme === 'R';
-    res.push({ ...p, labialized, retracted });
+    let velarized = 0;
+    if (p.phoneme === 'L') {
+      if (/ly$/i.test(word) && pi === phs.length - 2 && phs[pi + 1].phoneme === 'IY') {
+        velarized = 0;
+      } else if (p.phono === 'nucleus') {
+        velarized = 1;
+      } else if (p.phono === 'coda') {
+        velarized = (pi < phs.length - 1 && phs[pi + 1].phono === 'coda') ? 0.8 : 0.6;
+      } else { // if (p.phono === 'onset') {
+        velarized = (pi && phs[pi - 1].phono === 'onset') ? 0.4 : 0.2 ;
+      }
+    }
+    res.push({ ...p, labialized, retracted, velarized });
   }
   return res;
 }
@@ -164,6 +176,8 @@ function release(phs) {
     if (p.pho === 't' && p.phono === 'coda'
       && pi < phs.length - 1 && !phs[pi + 1].isVowel)
       glottalized = true;
+    if (p.pho === 't' && pi === phs.length - 1)
+      glottalized = true;
     res.push({ ...p, release, aspirate, devoiced, raised, glottalized });
   }
   return res;
@@ -202,7 +216,7 @@ function mergeAffricates(phs) {
 }
 
 module.exports = (phs, word) => {
-  const phs1 = labializeAndRetract(phs);
+  const phs1 = labializeRetractVelarize(phs, word);
   const phs2 = splitAffricates(phs1);
   const phs3 = mergingElide(phs2, word);
   const phs4 = release(phs3);

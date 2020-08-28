@@ -42,6 +42,7 @@ const vowelLaTeX = {
   U: { lax: '\\"U', laxWeak: '8' },
 };
 const consonantLaTeX = {
+  l: '\\|]l',
   r: '\\*r',
   c: '\\c{c}',
 };
@@ -60,6 +61,8 @@ function latexEncode(phs) {
         } else {
           s = consonantLaTeX[p.pho] || p.pho;
         }
+        if (p.velarized > 0.5)
+          s = `\\|~{${s}}`;
         if (p.devoiced)
           s = `\\r{${s}}`;
         if (p.nasalized)
