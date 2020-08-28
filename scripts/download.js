@@ -7,7 +7,7 @@ const https = require('https');
 mkdirp.sync('data');
 
 https.get('https://svn.code.sf.net/p/cmusphinx/code/trunk/cmudict/cmudict-0.7b', (resp) => {
-  const f = fs.createWriteStream('data/cmudict');
+  const f = fs.createWriteStream('data/cmudict.txt');
   resp.pipe(f);
 }).on('error', (err) => {
   console.error('Error:', err);

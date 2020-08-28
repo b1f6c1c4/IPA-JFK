@@ -1,5 +1,5 @@
-const roundedPhonemes = ['CH', 'JH', 'SH', 'JH', 'R'];
-const roundPhonemes = ['CH', 'JH', 'SH', 'JH', 'R', 'W'];
+const roundedPhonemes = ['CH', 'JH', 'SH', 'ZH', 'R'];
+const roundPhonemes = ['CH', 'JH', 'SH', 'ZH', 'R', 'W'];
 
 function labializeRetractVelarize(phs, word) {
   if (!phs) return phs;
