@@ -44,15 +44,23 @@ console.log(jfk.latex('<word>'));
 - How do you get these?
 
     > Phonemes are retrived from [The CMU Pronouncing Dictionary](http://www.speech.cs.cmu.edu/cgi-bin/cmudict).
-    > Phonemes are translated into allophones using [these rules](doc/jfk.pdf).
+    > Phonemes are translated into allophones using a fixed set of rules.
 
 - I don't understand the complex syntax!
 
-    > Go back and learn IPA. The *real* IPA, not simplified ones. Including modificaiton symbols.
+    > Go back and learn IPA. The *real* [IPA](https://en.wikipedia.org/wiki/International_Phonetic_Alphabet), not simplified ones. Including [diacritics](https://en.wikipedia.org/wiki/International_Phonetic_Alphabet#Diacritics).
 
 - I live in NYC and this is not my accent.
 
     > You may open an issue here, but we are unlikely to change the rules.
+
+- Too few words available.
+
+    > You should blame [CMU](http://www.speech.cs.cmu.edu/cgi-bin/cmudict).
+
+- Some phonemes are totally incorrect.
+
+    > Also blame [CMU](http://www.speech.cs.cmu.edu/cgi-bin/cmudict).
 
 ## License
 
