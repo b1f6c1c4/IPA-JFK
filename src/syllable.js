@@ -30,7 +30,7 @@ const onset = [
 const coda = [
   [],
   // The single consonant phonemes except /h/, /w/, /j/ and, in non-rhotic varieties, /r/:
-  ['M'], ['N'], ['NG'], ['P'], ['B'], ['T'], ['D'], ['K'], ['G'], ['F'], ['V'], ['TH'], ['DH'], ['S'], ['Z'], ['SH'], ['ZH'], ['L'], ['CH'], ['JH'],
+  ['M'], ['N'], ['NG'], ['P'], ['B'], ['T'], ['D'], ['K'], ['G'], ['F'], ['V'], ['TH'], ['DH'], ['S'], ['Z'], ['SH'], ['ZH'], ['L'], ['R'], ['CH'], ['JH'],
   // Lateral approximant plus stop or affricate:
   ['L', 'P'], ['L', 'B'], ['L', 'T'], ['L', 'D'], ['L', 'CH'], ['L', 'JH'], ['L', 'K'],
   // In rhotic varieties, /r/ plus stop or affricate:
@@ -149,7 +149,7 @@ function syllabify(phs, word) {
     }
     const stressD = (ints[i + 1].stress * 2 % 3) - (ints[i - 1].stress * 2 % 3);
     if (!maybe.length) {
-      console.error('Warning: no possible splitting of', word, int);
+      console.error('Warning: no possible splitting of', word, int.map((n) => n.phoneme).join(' '));
       maybe = [];
       for (let j = 0; j <= int.length; j++) {
         maybe.push(j);

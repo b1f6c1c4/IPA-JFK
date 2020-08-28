@@ -96,7 +96,7 @@ function mergingElide(phs, word) {
         break;
       case 'h':
         if (pi < phs.length - 1 && phs[pi + 1].pho === 'w') {
-          if (!/^(JU|HU|HW/.test(word)) // TODO: Confirm hw -> w
+          if (!/^(JU|HU|HW)/.test(word)) // TODO: Confirm hw -> w
             continue;
         }
         if (pi < phs.length - 1 && phs[pi + 1].pho === 'j') {
