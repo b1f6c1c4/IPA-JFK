@@ -125,7 +125,9 @@ function syllabify(phs) {
   for (let i = 0; i < ints.length; i += 2) {
     const int = ints[i];
     let maybe;
-    if (i === 0) {
+    if (int.length === 0) {
+      maybe = [0];
+    } else if (i === 0) {
       maybe = [0];
     } else if (i === ints.length - 1) {
       maybe = [int.length];
@@ -148,6 +150,9 @@ function syllabify(phs) {
     const stressD = (ints[i + 1].stress * 2 % 3) - (ints[i - 1].stress * 2 % 3);
     maybe = maybe.map((pos) => {
       let fit = -Math.abs(pos - int.length / 2 + 0.3 * (stressD + 0.1));
+      if (!pos && ints[i - 1].phoneme === 'ER') {
+        fit += 1.2;
+      }
       if (pos && pos < int.length) {
         if (badSplit.includesX([int[pos - 1].phoneme, int[pos].phoneme])) {
           fit -= 5.0;
@@ -168,7 +173,6 @@ function syllabify(phs) {
     });
     maybe.sort(({ fit: l }, { fit: r }) => r - l);
     int.split = maybe[0].pos;
-    console.log(int, maybe);
   }
   let stress;
   const res = [];
@@ -187,7 +191,45 @@ function syllabify(phs) {
       res.push({ ...vow, phono: 'nucleus' });
     }
   }
-  console.log(res);
+  return res;
 }
 
-module.exports = syllabify;
+function rPhoneme(phs) {
+  if (!phs) return phs;
+  const res = [];
+  for (let pi = 0; pi < phs.length; pi++) {
+    const p = phs[pi];
+    res.push(p);
+    if (p.phoneme === 'ER' && pi < phs.length - 1 && phs[pi + 1].isVowel) {
+      res.push({ phoneme: 'R', isVowel: false, phono: 'onset', stress: phs[pi + 1].stress });
+    }
+  }
+  return res;
+}
+
+function syllablicize(phs) {
+  if (!phs) return phs;
+  const res = [];
+  for (let pi = 0; pi < phs.length; pi++) {
+    const p = phs[pi];
+    if (p.phoneme === 'AH' && !p.stress && pi < phs.length - 1
+        && ['M', 'N', 'L'].includes(phs[pi + 1].phoneme)) {
+      if (pi && phs[pi - 1].phono === 'coda' && ['T', 'D'].includes(phs[pi - 1].phoneme)
+        || pi && phs[pi - 1].phono === 'nucleus') {
+        res.push({ ...phs[pi + 1], phono: phs[pi + 1].phono === 'coda' ? 'nucleus' : 'onset', stress: 0 });
+        pi++;
+        continue;
+      }
+    }
+    res.push(p);
+  }
+  return res;
+}
+
+module.exports = (phs) => {
+  const phs1 = syllabify(phs);
+  const phs2 = rPhoneme(phs1);
+  const phs3 = syllablicize(phs2);
+  return phs3;
+};
+module.exports.default = module.exports;

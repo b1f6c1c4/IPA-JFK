@@ -102,16 +102,6 @@ function mergingElide(phs, word) {
 const fricativePhos = ['f', 'v', 'T', 'D', 's', 'z', 'S', 'Z'];
 const plosivePhos = ['p', 'b', 't', 'd', 'k', 'g'];
 const voicelessPhos = ['p', 't', 'k', 'f', 'T', 's', 'S'];
-const thirdPhos = {
-  p: ['l', 'r', 'j'],
-  t: ['r', 'j'],
-  k: ['l', 'r', 'w', 'j'],
-};
-const secondPhos = {
-  p: ['l', 'r', 'w', 'j'],
-  t: ['r', 'w', 'j'],
-  k: ['l', 'r', 'w', 'j'],
-};
 
 function release(phs) {
   if (!phs) return phs;
@@ -120,37 +110,31 @@ function release(phs) {
     const p = phs[pi];
     let devoiced;
     let aspirate;
-    let silent;
+    let release;
+    let raised;
+    let glottalized;
     switch (p.pho) {
       case 'p':
       case 't':
       case 'k':
-        if (pi && phs[pi - 1].pho === 's' && pi < phs.length - 1
-          && (phs[pi + 1].isVowel || thirdPhos[p.pho].includes(phs[pi + 1].pho))) {
+        if (pi && phs[pi - 1].pho === 's' && p.phono === 'onset') {
           aspirate = 0;
-          silent = false;
         } else if (pi < phs.length - 1 && fricativePhos.includes(phs[pi + 1].pho)) {
           aspirate = 0;
-          silent = false;
         } else if (pi < phs.length - 1 && plosivePhos.includes(phs[pi + 1].pho)) {
           aspirate = 0;
-          silent = true;
-        } else if (pi < phs.length - 1 && ((phs[pi + 1].isVowel && phs[pi + 1].stress)
-          || (secondPhos[p.pho].includes(phs[pi + 1].pho) &&
-            pi < phs.length - 2 && phs[pi + 2].isVowel && phs[pi + 2].stress))) {
+          release = 'silent';
+        } else if (p.stress && p.phono === 'onset') {
           aspirate = 1;
-          silent = false;
         } else {
           aspirate = 0.5;
-          silent = false;
         }
-        res.push({ release: silent ? 'silent' : undefined, ...p, aspirate });
         break;
       case 'b':
       case 'd':
       case 'g':
-        silent = pi < phs.length - 1 && plosivePhos.includes(phs[pi + 1].pho);
-        res.push({ ...p, silent });
+        if (pi < phs.length - 1 && plosivePhos.includes(phs[pi + 1].pho))
+          release = 'silent';
         break;
       case 'm':
       case 'n':
@@ -158,15 +142,29 @@ function release(phs) {
       case 'l':
       case 'r':
       case 'w':
-        devoiced = pi && voicelessPhos.includes(phs[pi - 1].pho);
-        silent = ['n', 'N'].includes(p.pho) && pi === phs.length - 1;
-        raise = p.pho === 'r' && pi && ['t', 'd'].includes(phs[pi - 1].pho);
-        res.push({ release: silent ? 'silent' : undefined, ...p, devoiced, raise });
-        break;
-      default:
-        res.push(p);
+        devoiced = pi && voicelessPhos.includes(phs[pi - 1].pho) && p.phono !== 'nucleus';
+        if (['n', 'N'].includes(p.pho) && pi === phs.length - 1)
+          release = 'silent';
+        raised = p.pho === 'r' && pi && ['t', 'd'].includes(phs[pi - 1].pho);
         break;
     }
+    switch (p.pho) {
+      case 't':
+      case 'd':
+        if (p.phono === 'coda' && pi < phs.length - 1 && ['m', 'n'].includes(phs[pi + 1].pho)) {
+          release = 'nasal';
+          glottalized = true;
+        }
+        if (p.phono === 'coda' && pi < phs.length - 1 && phs[pi + 1].pho === 'l') {
+          release = 'labial';
+          glottalized = true;
+        }
+        break;
+    }
+    if (p.pho === 't' && p.phono === 'coda'
+      && pi < phs.length - 1 && !phs[pi + 1].isVowel)
+      glottalized = true;
+    res.push({ ...p, release, aspirate, devoiced, raised, glottalized });
   }
   return res;
 }

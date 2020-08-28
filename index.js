@@ -12,7 +12,7 @@ function ir(w) {
     return wx[0];
   };
   let phs = parse[wu][0];
-  syllable(phs);
+  phs = syllable(phs);
   phs = vowel(phs, wu, ref);
   phs = consonant(phs, wu, ref);
   return phs;
@@ -47,6 +47,7 @@ const consonantLaTeX = {
 };
 
 function latexEncode(phs) {
+  let state = 'coda';
   function enc(ph) {
     let rx = '';
     for (let p of ph) {
@@ -61,16 +62,22 @@ function latexEncode(phs) {
         }
         if (p.devoiced)
           s = `\\r{${s}}`;
-        if (p.nasal)
+        if (p.nasalized)
           s = `\\~{${s}}`;
         if (p.retracted)
           s = `\\textsubbar{${s}}`;
-        if (p.raise)
+        if (p.raised)
           s = `\\textraising{${s}}`;
+        if (p.phono === 'nucleus' && !p.isVowel)
+          s = `\\s{${s}}`;
         if (p.release === 'silent')
           s += '\\textcorner{}';
         {
           let sup = '';
+          if (p.release === 'nasal')
+            sup += 'n';
+          else if (p.release === 'labial')
+            sup += 'l';
           if (p.aspirate > 0.7)
             sup += 'h';
           if (p.labialized)
@@ -78,10 +85,28 @@ function latexEncode(phs) {
           if (sup)
             s += `\\super{${sup}}`;
         }
+        if (p.glottalized)
+          s = 'P' + s;
+        switch (state) {
+          case 'onset':
+            state = p.phono;
+            break;
+          case 'coda':
+          case 'nucleus':
+            if (p.phono !== 'coda') {
+              rx += ' ';
+              if (p.stress === 1)
+                rx += '"';
+              else if (p.stress === 2)
+                rx += '""';
+            }
+            state = p.phono;
+            break;
+        }
         rx += s;
       }
     }
-    return rx;
+    return rx.trim();
   }
   return `\\textipa{${enc(phs)}}`;
 }
