@@ -2,6 +2,12 @@
 
 > IPA narrow transcription of English words in New York City accent
 
+## Demo Website
+
+[![Netlify Status](https://api.netlify.com/api/v1/badges/6cc76b39-d72c-4d05-9959-0d57d6b8b6e4/deploy-status)](https://app.netlify.com/sites/ipa-jfk/deploys)
+
+You can lookup words on our hassle-free **[Demo Website](https://jfk.b1f6c1c4.info/)**!
+
 ## Install
 
 ```bash
