@@ -108,7 +108,7 @@ Array.prototype.includesX = function(valueToFind) {
   return false;
 };
 
-function syllabify(phs) {
+function syllabify(phs, word) {
   if (!phs) return phs;
   const ints = [];
   let state = [];
@@ -148,6 +148,13 @@ function syllabify(phs) {
       continue;
     }
     const stressD = (ints[i + 1].stress * 2 % 3) - (ints[i - 1].stress * 2 % 3);
+    if (!maybe.length) {
+      console.error('Warning: no possible splitting of', word, int);
+      maybe = [];
+      for (let j = 0; j <= int.length; j++) {
+        maybe.push(j);
+      }
+    }
     maybe = maybe.map((pos) => {
       let fit = -Math.abs(pos - int.length / 2 + 0.3 * (stressD + 0.1));
       if (!pos && ints[i - 1].phoneme === 'ER') {
@@ -226,8 +233,8 @@ function syllablicize(phs) {
   return res;
 }
 
-module.exports = (phs) => {
-  const phs1 = syllabify(phs);
+module.exports = (phs, word) => {
+  const phs1 = syllabify(phs, word);
   const phs2 = rPhoneme(phs1);
   const phs3 = syllablicize(phs2);
   return phs3;

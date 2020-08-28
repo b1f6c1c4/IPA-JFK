@@ -38,9 +38,9 @@ if (argv._.length !== 1) {
 }
 
 if (argv.unicode) {
-  console.log(jfk.unicode(argv._[0]));
+  console.log(jfk.unicode(argv._[0]).join('\n'));
 } else if (argv.html) {
-  console.log(jfk.html(argv._[0]));
+  console.log(jfk.html(argv._[0]).join('\n'));
 } else { // if (argv.latex) {
-  console.log(jfk.latex(argv._[0]));
+  console.log(jfk.latex(argv._[0]).join('\n'));
 }

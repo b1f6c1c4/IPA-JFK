@@ -11,11 +11,11 @@ function ir(w) {
     if (!wx) return undefined;
     return wx[0];
   };
-  let phs = parse[wu][0];
-  phs = syllable(phs);
-  phs = vowel(phs, wu, ref);
-  phs = consonant(phs, wu);
-  return phs;
+  return parse[wu].map((ps) => {
+    let phs = syllable(ps, wu);
+    phs = vowel(phs, wu, ref);
+    return consonant(phs, wu);
+  });
 }
 
 const vowelUnicode = {
@@ -236,8 +236,8 @@ function latexEncode(phs) {
 }
 
 module.exports = {
-  unicode: (w) => utf8Encode(ir(w)),
-  html: (w) => htmlEncode(utf8Encode(ir(w))),
-  latex: (w) => latexEncode(ir(w)),
+  unicode: (w) => ir(w).map(utf8Encode),
+  html: (w) => ir(w).map(utf8Encode).map(htmlEncode),
+  latex: (w) => ir(w).map(latexEncode),
 };
 module.exports.default = module.exports;
