@@ -23,22 +23,22 @@ function utf8Encode(r) {
 }
 
 const vowelLaTeX = {
-  ae: { tense: 'e\\textsubarch{@}', lax: '\\ae{}' },
-  aI: { tense: '\\|+A\\textsubarch{I}' },
-  aU: { tense: 'a\\textsubarch{U}' },
-  A: { tense: 'A:', rhotic: '6\textsubarch{@}\textrhoticity' },
-  2: { lax: '2' },
-  eI: { tense: '\\|`e\\textsubarch{I}' },
-  e: { rhotic: '\\|`e\\textsubarch{@}\\textrhoticity', lax: 'E' },
-  '3r': { rhotic: '3\\textrhoticity:' },
-  '@': { rhoticWeak: '@\\textrhoticity:', laxWeak: '@' },
-  i: { tense: 'i:', tenseWeak: 'i:', rhotic: 'i\\textsubarch{@}\\textrhoticity' },
-  I: { lax: '\\"I', laxWeak: '9' },
-  oU: { tense: '\\|`o\\textsubarch{U}' },
-  OI: { tense: '\\|`o\\textsubarch{I}' },
-  O: { tense: 'O\\texsubarch{@}', rhotic: '\\|`o\\textsubarch{@}\\textrhoticity', lax: 'O\\textsubarch{@}' },
-  u: { tense: 'U\\textsubarch{u}', tenseWeak: 'U\textsubarch{u}' },
-  U: { rhotic: 'U\\textsubarch{@}\\textrhoticity', lax: '\\"U', laxWeak: '8' },
+  ae: { tense: ['e', '\\textsubarch{@}'], lax: ['\\ae{}'] },
+  aI: { tense: ['\\|+A', '\\textsubarch{I}'] },
+  aU: { tense: ['a', '\\textsubarch{U}'] },
+  A: { tense: ['A', ':'], rhotic: ['6', '\\textsubarch{@}', '\\textrhoticity'] },
+  2: { lax: ['2'] },
+  eI: { tense: ['\\|`e\\textsubarch{I}'] },
+  e: { rhotic: ['\\|`e\\textsubarch{@}', '\\textrhoticity'], lax: ['E'] },
+  '3r': { rhotic: ['3', '\\textrhoticity', ':'] },
+  '@': { rhoticWeak: ['@', '\\textrhoticity', ':'], laxWeak: ['@'] },
+  i: { tense: ['i', ':'], tenseWeak: ['i', ':'], rhotic: ['i', '\\textsubarch{@}', '\\textrhoticity'] },
+  I: { lax: ['\\"I'], laxWeak: ['9'] },
+  oU: { tense: ['\\|`o', '\\textsubarch{U}'] },
+  OI: { tense: ['\\|`o', '\\textsubarch{I}'] },
+  O: { tense: ['O', '\\texsubarch{@}'], rhotic: ['\\|`o\\textsubarch{@}', '\\textrhoticity'], lax: ['O', '\\textsubarch{@}'] },
+  u: { tense: ['U', '\\textsubarch{u}'], tenseWeak: ['U', '\\textsubarch{u}'] },
+  U: { rhotic: ['U', '\\textsubarch{@}', '\\textrhoticity'], lax: ['\\"U'], laxWeak: ['8'] },
 };
 const consonantLaTeX = {
   l: '\\|]l',
@@ -58,24 +58,25 @@ function latexEncode(phs) {
         rx += `${pre}\\t{${s}}`;
         if (sup) rx += `\\super{${sup}}`;
       } else {
-        let s;
+        let ss;
         if (p.isVowel) {
-          s = vowelLaTeX[p.pho][p.property + (p.weak ? 'Weak' : '')];
+          ss = vowelLaTeX[p.pho][p.property + (p.weak ? 'Weak' : '')];
         } else {
-          s = consonantLaTeX[p.pho] || p.pho;
+          ss = [consonantLaTeX[p.pho] || p.pho];
         }
         if (p.velarized > 0.5)
-          s = `\\|~{${s}}`;
+          ss = ss.map((s) => `\\|~{${s}}`);
         if (p.devoiced)
-          s = `\\r{${s}}`;
+          ss = ss.map((s) => `\\r{${s}}`);
         if (p.nasalized)
-          s = `\\~{${s}}`;
+          ss = ss.map((s) => `\\~{${s}}`);
         if (p.retracted)
-          s = `\\textsubbar{${s}}`;
+          ss = ss.map((s) => `\\textsubbar{${s}}`);
         if (p.raised)
-          s = `\\textraising{${s}}`;
+          ss = ss.map((s) => `\\textraising{${s}}`);
         if (p.phono === 'nucleus' && !p.isVowel)
-          s = `\\s{${s}}`;
+          ss = ss.map((s) => `\\s{${s}}`);
+        let s = ss.join('');
         if (p.release === 'silent')
           s += '\\textcorner{}';
         if (p.glottalized)
