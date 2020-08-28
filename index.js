@@ -1,5 +1,6 @@
 const htmlencode = require('htmlencode');
 const parse = require('./src/parse');
+const syllable = require('./src/syllable');
 const vowel = require('./src/vowel');
 const consonant = require('./src/consonant');
 
@@ -11,6 +12,7 @@ function ir(w) {
     return wx[0];
   };
   let phs = parse[wu][0];
+  syllable(phs);
   phs = vowel(phs, wu, ref);
   phs = consonant(phs, wu, ref);
   return phs;
