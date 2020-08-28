@@ -14,7 +14,7 @@ function ir(w) {
   let phs = parse[wu][0];
   phs = syllable(phs);
   phs = vowel(phs, wu, ref);
-  phs = consonant(phs, wu, ref);
+  phs = consonant(phs, wu);
   return phs;
 }
 

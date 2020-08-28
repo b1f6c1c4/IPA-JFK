@@ -1,4 +1,7 @@
-const natural = require('natural');
+// TODO: implement the stemming algorithm
+function stem(w0) {
+  return w0;
+}
 
 const maybeRhotic = ['AA', 'EH', /* 'ER', */ 'IH', 'AO', 'UH'];
 function rhoticize(phs) {
@@ -65,7 +68,7 @@ function tensing(phs, word, reflex) {
         if (aeTense.includes(word)) {
           res.push({ property: 'tense', ...p, pho: 'ae' }); break;
         }
-        const w = natural.LancasterStemmer.stem(word).toUpperCase();
+        const w = stem(word);
         let phsR = word === w ? phs : reflex(w);
         if (!(phsR && phsR[pi] && phsR[pi].phoneme === 'AE')) {
           console.error('Warning: stemming of', word, 'to', w, 'may have failed');
