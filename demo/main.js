@@ -50,6 +50,14 @@ xhr.onload = () => {
       document.getElementById('word').onkeyup = update;
       document.getElementById('unicode').onclick = update;
       document.getElementById('latex').onclick = update;
+      if (window.location.hash.substr(1)) {
+        document.getElementById('word').value = window.location.hash.substr(1).trim();
+        update();
+      }
+      window.onhashchange = () => {
+        document.getElementById('word').value = window.location.hash.substr(1).trim();
+        update();
+      }
     }
   }
 };
