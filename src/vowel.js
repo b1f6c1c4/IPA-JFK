@@ -15,11 +15,6 @@
  * along with IPA-JFK.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-// TODO: implement the stemming algorithm
-function stem(w0) {
-  return w0;
-}
-
 const maybeRhotic = ['AA', 'EH', /* 'ER', */ 'IH', 'AO', 'UH'];
 function rhoticize(phs) {
   if (!phs) return phs;
@@ -66,52 +61,64 @@ const aeTensePhonemes = ['M', 'N', 'NG', 'B', 'D', 'JH', 'G', 'F', 'TH', 'S', 'S
 
 const aeLax = [
   // Function words with simple coda:
-  // TODO: can (n.) should NOT be there
   'CAN', 'HAVE', 'HAD', 'HAS', 'AT', 'THAT', 'AS', 'AND', 'AN', 'ANY', 'AM',
-  // TODO: Loanwords, names, abbreviations:
+  // Loanwords, names, abbreviations:
+  // We rely on aeHint for this
 ];
 const aeLaxPhonemes = ['P', 'T', 'CH', 'K', 'V', 'DH', 'Z', 'ZH', 'L'];
 
-function tensing(phs, word, reflex) {
+// aeHint:
+//   0: All lax
+//   1: Last /ae/ tense
+//   2: 2nd-last /ae/ tense
+//   ...
+//   -1: Last /ae/ lax
+//   -2: 2nd-last last /ae/ lax
+//   ...
+//   1, -2: Combine 1 and -2
+//   ...
+function tensing(phs, word, aeHint) {
   if (!phs) return phs;
   const res = [];
+  const aeHints = [];
+  {
+    const aes = phs.reduce((v,{ phoneme }) => v + (phoneme === 'AE'), 0);
+    aeHint.split(/,\s+/).forEach((v) => {
+      if (+v === 0) {
+        for (let i = 0; i < aes; i++) aeHints[i] = false;
+      } else if (+v < 0) {
+        aeHints[-v] = false;
+      } else if (+v > 0) {
+        aeHints[+v] = true;
+      }
+    });
+  }
   for (let pi = 0; pi < phs.length; pi++) {
     const p = phs[pi];
     switch (p.phoneme) {
-      case 'AE': // The /ae/-raising rules!
-        if (aeLax.includes(word)) {
-          res.push({ property: 'lax', ...p, pho: 'ae' }); break;
+      case 'AE':
+        let tense = aeHints.splice(0, 1)[0];
+        if (tense !== undefined) {
+          // do nothing
+        } else if (aeLax.includes(word)) {
+          tense = false;
+        } else if (aeTense.includes(word)) {
+          tense = true;
+        } else if (pi === phs.length - 1) { // End of word
+          tense = false;
+        } else if (phs[pi + 1].isVowel) { // End of syllable
+          tense = false;
+        } else if (pi < phs.length - 2 && phs[pi + 2].isVowel) { // Before a pre-vocalic consonant
+          tense = false;
+        } else if (aeTensePhonemes.includes(phs[pi + 1].phoneme)) { // Check the consonant is
+          tense = true;
+        } else if (aeLaxPhonemes.includes(phs[pi + 1].phoneme)) {
+          tense = false;
+        } else {
+          console.error('Warning: cannot decide /ae/-raising of ', word);
+          tense = false;
         }
-        if (aeTense.includes(word)) {
-          res.push({ property: 'tense', ...p, pho: 'ae' }); break;
-        }
-        const w = stem(word);
-        let phsR = word === w ? phs : reflex(w);
-        if (!(phsR && phsR[pi] && phsR[pi].phoneme === 'AE')) {
-          console.error('Warning: stemming of', word, 'to', w, 'may have failed');
-          phsR = phs;
-        }
-        // End of word
-        if (pi === phsR.length - 1) {
-          res.push({ property: 'lax', ...p, pho: 'ae' }); break;
-        }
-        // End of syllable
-        if (phsR[pi + 1].isVowel) {
-          res.push({ property: 'lax', ...p, pho: 'ae' }); break;
-        }
-        // Before a pre-vocalic consonant
-        if (pi < phsR.length - 2 && phsR[pi + 2].isVowel) {
-          res.push({ property: 'lax', ...p, pho: 'ae' }); break;
-        }
-        // Check what the consonant is
-        if (aeTensePhonemes.includes(phsR[pi + 1].phoneme)) {
-          res.push({ property: 'tense', ...p, pho: 'ae' }); break;
-        }
-        if (aeLaxPhonemes.includes(phsR[pi + 1].phoneme)) {
-          res.push({ property: 'lax', ...p, pho: 'ae' }); break;
-        }
-        console.error('Warning: cannot decide /ae/-raising of ', word);
-        res.push({ property: 'lax', ...p, pho: 'ae' });
+        res.push({ property: tense ? 'tense' : 'lax', ...p, pho: 'ae' });
         break;
       case 'AY': res.push({ property: 'tense',  ...p, pho: 'aI' }); break;
       case 'AW': res.push({ property: 'tense',  ...p, pho: 'aU' }); break;
@@ -157,9 +164,9 @@ function nasalize(phs) {
   return res;
 }
 
-module.exports = (phs, word, reflex) => {
+module.exports = (phs, word, aeHint) => {
   const phs1 = rhoticize(phs);
-  const phs2 = tensing(phs1, word, (w) => rhoticize(reflex(w)));
+  const phs2 = tensing(phs1, word, aeHint);
   const phs3 = nasalize(phs2);
   return phs3;
 };

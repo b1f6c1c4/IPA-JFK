@@ -30,6 +30,7 @@
   },
   "homepage": "https://github.com/b1f6c1c4/IPA-JFK#readme",
   "dependencies": {
+    "escape-string-regexp": "^4.0.0",
     "htmlencode": "0.0.4",
     "yargs": "^15.4.1"
   },

@@ -22,7 +22,7 @@ const jfk = require('..');
 
 const { argv } = yargs
   .scriptName('jfk')
-  .usage('$0 [<options>] <word>')
+  .usage('$0 [<options>] <word> [<phoneme>...]')
   .strict()
   .help('h')
   .alias('h', 'help')
@@ -49,15 +49,18 @@ const { argv } = yargs
     return true;
   });
 
-if (argv._.length !== 1) {
+if (!argv._.length) {
   console.error('Error: Missing the <word> you want to translate. See jfk --help for help.');
   process.exit(1);
 }
 
+const w = argv._[0].splice(1);
+const ref = argv._.join(' ');
+
 if (argv.unicode) {
-  console.log(jfk.unicode(argv._[0]).join('\n'));
+  console.log(jfk.unicode(w, ref).join('\n'));
 } else if (argv.html) {
-  console.log(jfk.html(argv._[0]).join('\n'));
+  console.log(jfk.html(w, ref).join('\n'));
 } else { // if (argv.latex) {
-  console.log(jfk.latex(argv._[0]).join('\n'));
+  console.log(jfk.latex(w, ref).join('\n'));
 }

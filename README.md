@@ -20,23 +20,36 @@ npm i ipa-jfk
 ## CLI Usage
 
 ```bash
-jfk [--unicode|--html|--latex] <word>
+jfk [--unicode|--html|--latex] <word> [<phoneme>...] [-- <aeHint>]
 ```
 
 - Output format:
     - `--unicode`: *(default)* UTF-8 encoded [IPA in unicode](https://en.wikipedia.org/wiki/Phonetic_symbols_in_Unicode).
     - `--html`: HTML entities of IPA in unicode.
     - `--latex`: LaTeX script for the [TIPA package](https://ctan.org/pkg/tipa).
-- `<word>`: which word to translate.
+- `<aeHint>`: Fine tune the /ae/-raising rules. For advanced use only.
+- `<word>`: Which word to translate.
+- `<phoneme>`: The reference phonemes to use.
 
 ## Library Usage
 
 ```js
 const jfk = require('ipa-jfk');
 
-console.log(jfk.unicode('<word>'));
-console.log(jfk.html('<word>'));
-console.log(jfk.latex('<word>'));
+// Cache the whole database to speed up future lookups
+jfk.cacheDatabase();
+
+// Get phonemes (it returns an array)
+const [ph] = jfk.queryDatabase('<word>');
+// Alternatively, you can supply your own phonemes.
+
+// Get exact pronunciation
+const ir = jfk.process('<word>', ph, <aeHint>);
+
+// Output
+console.log(jfk.unicode(ir));
+console.log(jfk.html(ir));
+console.log(jfk.latex(ir));
 ```
 
 ## FAQ
@@ -57,10 +70,12 @@ console.log(jfk.latex('<word>'));
 - Too few words available.
 
     > You should blame [CMU](http://www.speech.cs.cmu.edu/cgi-bin/cmudict).
+    > Alternatively, use the reference phonemes in [ARPAbet format](http://www.speech.cs.cmu.edu/cgi-bin/cmudict#phones).
 
 - Some phonemes are totally incorrect.
 
     > Also blame [CMU](http://www.speech.cs.cmu.edu/cgi-bin/cmudict).
+    > You may want to override it by using reference phonemes.
 
 ## License
 
