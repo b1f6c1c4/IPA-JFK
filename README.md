@@ -20,7 +20,7 @@ npm i ipa-jfk
 ## CLI Usage
 
 ```bash
-jfk [--unicode|--html|--latex] <word> [<phoneme>...] [-- <aeHint>]
+jfk [--unicode|--html|--latex] <word> [<phoneme>...] [<aeHint>]
 ```
 
 - Output format:
@@ -44,7 +44,7 @@ const [ph] = jfk.queryDatabase('<word>');
 // Alternatively, you can supply your own phonemes.
 
 // Get exact pronunciation
-const ir = jfk.process('<word>', ph, <aeHint>);
+const ir = jfk.process('<word>', ph, '<aeHint>');
 
 // Output
 console.log(jfk.unicode(ir));

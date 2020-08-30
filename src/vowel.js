@@ -81,15 +81,15 @@ function tensing(phs, word, aeHint) {
   if (!phs) return phs;
   const res = [];
   const aeHints = [];
-  {
+  if (aeHint) {
     const aes = phs.reduce((v,{ phoneme }) => v + (phoneme === 'AE'), 0);
     aeHint.split(/,\s+/).forEach((v) => {
       if (+v === 0) {
         for (let i = 0; i < aes; i++) aeHints[i] = false;
       } else if (+v < 0) {
-        aeHints[-v] = false;
+        aeHints[aes + v] = false;
       } else if (+v > 0) {
-        aeHints[+v] = true;
+        aeHints[aes - v] = true;
       }
     });
   }

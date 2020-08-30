@@ -22,7 +22,7 @@ const jfk = require('..');
 
 const { argv } = yargs
   .scriptName('jfk')
-  .usage('$0 [<options>] <word> [<phoneme>...]')
+  .usage('$0 [<options>] <word> [<phoneme>...] [<aeHint>]')
   .strict()
   .help('h')
   .alias('h', 'help')
@@ -54,13 +54,20 @@ if (!argv._.length) {
   process.exit(1);
 }
 
-const w = argv._[0].splice(1);
-const ref = argv._.join(' ');
+const [word] = argv._.splice(0, 1);
+const aeHint = /^[0-9, ]+$/.test(argv._[argv._.length - 1]) && ''+argv._.splice(argv._.length - 1)[0];
+const ref = argv._.join(' ').trim();
 
+const phss = ref ? [ref] : jfk.queryDatabase(word);
+const irs = phss.map((phs) => jfk.process(phs, word, aeHint));
+
+let res;
 if (argv.unicode) {
-  console.log(jfk.unicode(w, ref).join('\n'));
+  res = irs.map(jfk.unicode);
 } else if (argv.html) {
-  console.log(jfk.html(w, ref).join('\n'));
+  res = irs.map(jfk.html);
 } else { // if (argv.latex) {
-  console.log(jfk.latex(w, ref).join('\n'));
+  res = irs.map(jfk.latex);
 }
+
+res.forEach((r) => { console.log(r); });

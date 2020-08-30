@@ -15,6 +15,7 @@
  * along with IPA-JFK.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+const escapeStringRegexp = require('escape-string-regexp');
 const { htmlEncode } = require('htmlencode');
 const path = require('path');
 const fs = require('fs');
@@ -22,7 +23,7 @@ const core = require('./src');
 
 const fn = path.join(__dirname, 'data', 'cmudict.txt');
 
-let dictF = fs.readFileSync(fn, 'utf-8');
+let dictF = fs.readFileSync(fn, 'utf-8').replace(/_/g, '-');
 let dict;
 
 function cacheDatabase() {
@@ -41,18 +42,26 @@ function cacheDatabase() {
   });
 }
 
+const norm = (w) => w.trim().toUpperCase().replace(/ /g, '-');
+
 function queryDatabase(word) {
-  if (dict) return dict[word];
-  return file.matchAll(new RegExp(
-    `^${escapeStringRegexp(word.toUpperCase())}(?:\\([0-9]+\\))?  ([A-Z0-9]+)$`,
+  const w = norm(word);
+  if (dict) return dict[w];
+  const regex = new RegExp(
+    `\\b${escapeStringRegexp(w.toUpperCase())}(?:\\([0-9]+\\))?  ([A-Z0-9 ]+)\\b`,
     'g',
-  )).map((m) => m[1]);
+  );
+  const res = [];
+  for (let m of dictF.matchAll(regex)) {
+    res.push(m[1]);
+  }
+  return res;
 }
 
 module.exports = {
   cacheDatabase,
   queryDatabase,
-  process: core,
+  process: (ph, word, aeHint) => core(ph, norm(word), aeHint),
   unicode: core.display.utf8Encode,
   html: (phs) => htmlEncode(src.display.utf8Encode(phs)),
   latex: core.display.latexEncode,

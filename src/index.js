@@ -15,19 +15,18 @@
  * along with IPA-JFK.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-const escapeStringRegexp = require('escape-string-regexp');
 const parse = require('./parse');
 const syllable = require('./syllable');
 const vowel = require('./vowel');
 const consonant = require('./consonant');
 const display = require('./display');
 
-module.exports = ({ ph, word, aeHint }) => {
+module.exports = (ph, word, aeHint) => {
   let phs = parse(ph);
   phs = syllable(phs);
   phs = vowel(phs, word.toUpperCase(), aeHint);
   phs = consonant(phs, word.toUpperCase());
   return phs;
 };
-module.display = display;
+module.exports.display = display;
 module.exports.default = module.exports;
