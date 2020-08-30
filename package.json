@@ -8,7 +8,9 @@
   },
   "scripts": {
     "prepare": "./scripts/download.js",
-    "start": "./bin/jfk.js"
+    "lint": "eslint index.js db.js src/",
+    "start": "./bin/jfk.js",
+    "demo": "parcel demo/index.html"
   },
   "repository": {
     "type": "git",
@@ -35,6 +37,7 @@
     "yargs": "^15.4.1"
   },
   "devDependencies": {
+    "eslint": "^7.7.0",
     "mkdirp": "^1.0.4"
   }
 }

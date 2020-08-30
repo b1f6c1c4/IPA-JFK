@@ -22,7 +22,7 @@ let dictF;
 let dict;
 
 function cache() {
-  if (!dictF) throw new Exception('No database loaded.');
+  if (!dictF) throw new Error('No database loaded.');
   dict = {};
   dictF.split('\n').forEach((l) => {
     try {
@@ -43,7 +43,7 @@ const norm = (w) => w.trim().toUpperCase().replace(/ /g, '-');
 function query(word) {
   const w = norm(word);
   if (dict) return dict[w];
-  if (!dictF) throw new Exception('No database loaded.');
+  if (!dictF) throw new Error('No database loaded.');
   const regex = new RegExp(
     `\\b${escapeStringRegexp(w.toUpperCase())}(?:\\([0-9]+\\))?  ([A-Z0-9 ]+)\\b`,
     'g',

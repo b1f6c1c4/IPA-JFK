@@ -97,7 +97,7 @@ function tensing(phs, word, aeHint) {
   for (let pi = 0; pi < phs.length; pi++) {
     const p = phs[pi];
     switch (p.phoneme) {
-      case 'AE':
+      case 'AE': {
         let tense = aeHints.splice(0, 1)[0];
         if (tense !== undefined) {
           // do nothing
@@ -121,6 +121,7 @@ function tensing(phs, word, aeHint) {
         }
         res.push({ property: tense ? 'tense' : 'lax', ...p, pho: 'ae' });
         break;
+      }
       case 'AY': res.push({ property: 'tense',  ...p, pho: 'aI' }); break;
       case 'AW': res.push({ property: 'tense',  ...p, pho: 'aU' }); break;
       case 'AA': res.push({ property: 'tense',  ...p, pho: 'A' }); break;

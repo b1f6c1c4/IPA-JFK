@@ -198,7 +198,6 @@ function syllabify(phs) {
     maybe.sort(({ fit: l }, { fit: r }) => r - l);
     int.split = maybe[0].pos;
   }
-  let stress;
   const res = [];
   for (let i = 0; i < ints.length; i += 2) {
     const prv = ints[i];
