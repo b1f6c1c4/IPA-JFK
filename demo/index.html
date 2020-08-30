@@ -36,6 +36,14 @@
       <input type="text" id="word" name="word" autofocus><br>
       <input type="radio" id="unicode" name="format" value="unicode" checked><label for="unicode">Unicode</label>
       <input type="radio" id="latex" name="format" value="latex"><label for="latex">LaTeX/tipa</label>
+      <input type="radio" id="raw" name="format" value="raw"><label for="raw">JSON/Raw</label>
+      <details>
+        <summary>Advanced settings</summary>
+        <label for="ph">Reference Phonemes</label>
+        <input type="text" id="ph" name="ph"><br>
+        <label for="ae">/&aelig;/-raising Hints</label>
+        <input type="text" id="ae" name="ae"><br>
+      </details>
     </form>
     <ul id="results"></ul>
 

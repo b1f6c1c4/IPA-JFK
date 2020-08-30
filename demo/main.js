@@ -15,21 +15,28 @@
  * along with IPA-JFK.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-const jfk = require('../src');
+const db = require('../db');
 const cmu = require('../data/cmudict.txt');
 
-let ir;
 function update() {
   document.getElementById('results').innerHTML = '';
   try {
-    const phss = ir(document.getElementById('word').value);
+    const word = document.getElementById('word').value || '';
+    const ref = document.getElementById('ph').value;
+    const aeHint = document.getElementById('ae').value;
+    const phss = ref ? [ref] : db.query(word);
     for (let phs of phss) {
+      const ir = db.process(phs, word, aeHint);
       const li = document.createElement('li');
       if (document.getElementById('unicode').checked) {
-        li.innerText = jfk.disp.utf8Encode(phs)
+        li.innerText = db.display.utf8Encode(ir)
+      } else if (document.getElementById('latex').checked) {
+        const pre = document.createElement('pre');
+        pre.innerText = db.display.latexEncode(ir);
+        li.appendChild(pre);
       } else {
         const pre = document.createElement('pre');
-        pre.innerText = jfk.disp.latexEncode(phs);
+        pre.innerText = JSON.stringify(ir, null, 2);
         li.appendChild(pre);
       }
       document.getElementById('results').appendChild(li);
@@ -44,12 +51,16 @@ xhr.responseType = 'text';
 xhr.onload = () => {
   if (xhr.readyState === xhr.DONE) {
     if (xhr.status === 200) {
-      ir = jfk.makeDictionary(xhr.responseText);
+      db.load(xhr.responseText);
+      db.cache();
       document.getElementById('loading').style.display = 'none';
       document.getElementById('frm').style.display = 'initial';
       document.getElementById('word').onkeyup = update;
       document.getElementById('unicode').onclick = update;
       document.getElementById('latex').onclick = update;
+      document.getElementById('raw').onclick = update;
+      document.getElementById('ph').onkeyup = update;
+      document.getElementById('ae').onkeyup = update;
       if (window.location.hash.substr(1)) {
         document.getElementById('word').value = window.location.hash.substr(1).trim();
         update();
