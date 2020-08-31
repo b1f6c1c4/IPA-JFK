@@ -171,7 +171,8 @@ function release(phs) {
       case 'l':
       case 'r':
       case 'w':
-        devoiced = pi && voicelessPhos.includes(phs[pi - 1].pho) && p.phono !== 'nucleus';
+        devoiced = pi && voicelessPhos.includes(phs[pi - 1].pho) && p.phono !== 'nucleus'
+          && !['nasal', 'labial'].includes(res[pi - 1].release);
         if (['n', 'N'].includes(p.pho) && pi === phs.length - 1)
           release = 'silent';
         raised = p.pho === 'r' && pi && ['t', 'd'].includes(phs[pi - 1].pho);

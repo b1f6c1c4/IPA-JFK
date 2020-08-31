@@ -177,6 +177,9 @@ function syllabify(phs) {
       if (!pos && ints[i - 1].phoneme === 'ER') {
         fit += 1.2;
       }
+      if (pos === int.length && ints[i + 1].phoneme === 'ER') {
+        fit += 1.1;
+      }
       if (pos && pos < int.length) {
         if (badSplit.includesX([int[pos - 1].phoneme, int[pos].phoneme])) {
           fit -= 114514;
@@ -236,8 +239,17 @@ function syllablicize(phs) {
   for (let pi = 0; pi < phs.length; pi++) {
     const p = phs[pi];
     if (p.phoneme === 'AH' && !p.stress && pi < phs.length - 1
+        && ['L'].includes(phs[pi + 1].phoneme)) {
+      if (pi && phs[pi - 1].phono === 'coda'
+        || pi && phs[pi - 1].phono === 'nucleus') {
+        res.push({ ...phs[pi + 1], phono: phs[pi + 1].phono === 'coda' ? 'nucleus' : 'onset', stress: 0 });
+        pi++;
+        continue;
+      }
+    }
+    if (p.phoneme === 'AH' && !p.stress && pi < phs.length - 1
         && ['M', 'N', 'L'].includes(phs[pi + 1].phoneme)) {
-      if (pi && phs[pi - 1].phono === 'coda' && ['T', 'D'].includes(phs[pi - 1].phoneme)
+      if (pi && phs[pi - 1].phono === 'coda' && !['M', 'N', 'NG'].includes(phs[pi - 1].phoneme)
         || pi && phs[pi - 1].phono === 'nucleus') {
         res.push({ ...phs[pi + 1], phono: phs[pi + 1].phono === 'coda' ? 'nucleus' : 'onset', stress: 0 });
         pi++;
