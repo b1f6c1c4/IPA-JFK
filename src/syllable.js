@@ -125,7 +125,7 @@ Array.prototype.includesX = function(valueToFind) {
   return false;
 };
 
-function syllabify(phs) {
+function syllabify(phs, syllableHint) {
   if (!phs) return phs;
   const ints = [];
   let state = [];
@@ -139,10 +139,13 @@ function syllabify(phs) {
     }
   }
   ints.push(state);
+  const syllableHints = syllableHint ? syllableHint.trim().split(/\s+/).map((h) => +h) : [];
   for (let i = 0; i < ints.length; i += 2) {
     const int = ints[i];
     let maybe;
-    if (int.length === 0) {
+    if (syllableHints[i / 2 - 1] !== undefined) {
+      maybe = [syllableHints[i / 2 - 1]];
+    } else if (int.length === 0) {
       maybe = [0];
     } else if (i === 0) {
       maybe = [0];
@@ -261,8 +264,8 @@ function syllablicize(phs) {
   return res;
 }
 
-module.exports = (phs) => {
-  const phs1 = syllabify(phs);
+module.exports = (phs, syllableHint) => {
+  const phs1 = syllabify(phs, syllableHint);
   const phs2 = rPhoneme(phs1);
   const phs3 = syllablicize(phs2);
   return phs3;

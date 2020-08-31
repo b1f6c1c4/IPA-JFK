@@ -22,7 +22,7 @@ const jfk = require('..');
 
 const { argv } = yargs
   .scriptName('jfk')
-  .usage('$0 [<options>] <word> [<phoneme>...] [<aeHint>]')
+  .usage('$0 [<options>] <word> [<phoneme>...]')
   .strict()
   .help('h')
   .alias('h', 'help')
@@ -55,11 +55,10 @@ if (!argv._.length) {
 }
 
 const [word] = argv._.splice(0, 1);
-const aeHint = /^[0-9, ]+$/.test(argv._[argv._.length - 1]) && ''+argv._.splice(argv._.length - 1)[0];
 const ref = argv._.join(' ').trim();
 
 const phss = ref ? [ref] : jfk.queryDatabase(word);
-const irs = phss.map((phs) => jfk.process(phs, word, aeHint));
+const irs = phss.map((phs) => jfk.process(phs, word));
 
 let res;
 if (argv.unicode) {

@@ -20,14 +20,13 @@ npm i ipa-jfk
 ## CLI Usage
 
 ```bash
-jfk [--unicode|--html|--latex] <word> [<phoneme>...] [<aeHint>]
+jfk [--unicode|--html|--latex] <word> [<phoneme>...]
 ```
 
 - Output format:
     - `--unicode`: *(default)* UTF-8 encoded [IPA in unicode](https://en.wikipedia.org/wiki/Phonetic_symbols_in_Unicode).
     - `--html`: HTML entities of IPA in unicode.
     - `--latex`: LaTeX script for the [TIPA package](https://ctan.org/pkg/tipa).
-- `<aeHint>`: Fine tune the /ae/-raising rules. For advanced use only.
 - `<word>`: Which word to translate.
 - `<phoneme>`: The reference phonemes to use.
 
@@ -44,7 +43,7 @@ const [ph] = jfk.queryDatabase('<word>');
 // Alternatively, you can supply your own phonemes.
 
 // Get exact pronunciation
-const ir = jfk.process('<word>', ph, '<aeHint>');
+const ir = jfk.process('<word>', ph);
 
 // Output
 console.log(jfk.unicode(ir));
@@ -76,6 +75,10 @@ console.log(jfk.latex(ir));
 
     > Also blame [CMU](http://www.speech.cs.cmu.edu/cgi-bin/cmudict).
     > You may want to override it by using reference phonemes.
+
+- Syllabification or /&aelig;/-raising incorrect.
+
+    > You may want to override it by using hints (undocumented feature). See the source code.
 
 ## License
 

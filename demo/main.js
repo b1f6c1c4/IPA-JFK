@@ -24,9 +24,10 @@ function update() {
     const word = document.getElementById('word').value || '';
     const ref = document.getElementById('ph').value;
     const aeHint = document.getElementById('ae').value;
+    const syllableHint = document.getElementById('syllable').value;
     const phss = ref ? [ref] : db.query(word);
     for (let phs of phss) {
-      const ir = db.process(phs, word, aeHint);
+      const ir = db.process(phs, word, { aeHint, syllableHint });
       const li = document.createElement('li');
       if (document.getElementById('unicode').checked) {
         li.innerText = db.display.utf8Encode(ir)
@@ -61,6 +62,7 @@ xhr.onload = () => {
       document.getElementById('raw').onclick = update;
       document.getElementById('ph').onkeyup = update;
       document.getElementById('ae').onkeyup = update;
+      document.getElementById('syllable').onkeyup = update;
       if (window.location.hash.substr(1)) {
         document.getElementById('word').value = window.location.hash.substr(1).trim();
         update();
