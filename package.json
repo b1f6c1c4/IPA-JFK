@@ -1,6 +1,6 @@
 {
   "name": "ipa-jfk",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "IPA narrow transcription of English words in New York City accent",
   "main": "index.js",
   "bin": {
