@@ -23,7 +23,7 @@ const display = require('./display');
 
 module.exports = (ph, word, phonemic, { aeHint, syllableHint } = {}) => {
   let phs = parse(ph);
-  phs = syllable(phs, syllableHint);
+  phs = syllable(phs, syllableHint, phonemic);
   if (phonemic) {
     phs.phonemic = true;
     return phs;

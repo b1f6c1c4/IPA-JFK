@@ -264,9 +264,10 @@ function syllablicize(phs) {
   return res;
 }
 
-module.exports = (phs, syllableHint) => {
+module.exports = (phs, syllableHint, phonemic) => {
   const phs1 = syllabify(phs, syllableHint);
   const phs2 = rPhoneme(phs1);
+  if (phonemic) return phs2;
   const phs3 = syllablicize(phs2);
   return phs3;
 };
