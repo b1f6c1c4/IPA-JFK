@@ -59,7 +59,7 @@ module.exports = {
   load: (file) => { dictF = file.replace(/_/g, '-'); },
   cache,
   query,
-  process: (ph, word, hints) => core(ph.trim(), norm(word), hints),
+  process: (ph, word, phonemic, hints) => core(ph.trim(), norm(word), phonemic, hints),
   display: core.display
 };
 module.exports.default = module.exports;

@@ -20,13 +20,14 @@ npm i ipa-jfk
 ## CLI Usage
 
 ```bash
-jfk [--unicode|--html|--latex] <word> [<phoneme>...]
+jfk [--unicode|--html|--latex] [--phonemic] <word> [<phoneme>...]
 ```
 
 - Output format:
     - `--unicode`: *(default)* UTF-8 encoded [IPA in unicode](https://en.wikipedia.org/wiki/Phonetic_symbols_in_Unicode).
     - `--html`: HTML entities of IPA in unicode.
     - `--latex`: LaTeX script for the [TIPA package](https://ctan.org/pkg/tipa).
+- `--phonemic`: Disable narrow transcription, only use broad one.
 - `<word>`: Which word to translate.
 - `<phoneme>`: The reference phonemes to use.
 
@@ -42,8 +43,9 @@ jfk.cacheDatabase();
 const [ph] = jfk.queryDatabase('<word>');
 // Alternatively, you can supply your own phonemes.
 
-// Get exact pronunciation
-const ir = jfk.process('<word>', ph);
+// Get phonetics
+// The third parameter is phonemic/phonetic switch.
+const ir = jfk.process('<word>', ph, false);
 
 // Output
 console.log(jfk.unicode(ir));

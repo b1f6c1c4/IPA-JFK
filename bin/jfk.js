@@ -40,6 +40,10 @@ const { argv } = yargs
     describe: 'Output LaTeX script for the TIPA package.',
     type: 'boolean',
   })
+  .option('phonemic', {
+    describe: 'Disable narrow transcription, only use broad one.',
+    type: 'boolean',
+  })
   .check((argv) => {
     const v = +!!argv.unicode + +!!argv.html + +!!argv.latex;
     if (v > 1)
@@ -58,7 +62,7 @@ const [word] = argv._.splice(0, 1);
 const ref = argv._.join(' ').trim();
 
 const phss = ref ? [ref] : jfk.queryDatabase(word);
-const irs = phss.map((phs) => jfk.process(phs, word));
+const irs = phss.map((phs) => jfk.process(phs, word, argv.phonemic));
 
 let res;
 if (argv.unicode) {

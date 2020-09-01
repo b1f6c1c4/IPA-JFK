@@ -15,14 +15,56 @@
  * along with IPA-JFK.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+const phonemeUnicode = {
+  AE: '\u00e6',
+  AY: 'a\u026a',
+  AW: 'a\u028a',
+  AA: '\u0251',
+  AH: ['\u028c', '\u0259'],
+  EY: 'e\u026a',
+  EH: 'e',
+  ER: ['\u025c\u02de', '\u0259\u02de'],
+  IY: ['i\u02d0', 'i'],
+  IH: '\u026a',
+  OW: 'o\u028a',
+  OY: '\u0254\u026a',
+  AO: '\u0254',
+  UW: 'u',
+  UH: '\u028a',
+  M: 'm',
+  N: 'n',
+  NG: '\u014b',
+  P: 'p',
+  B: 'b',
+  T: 't',
+  D: 'd',
+  K: 'k',
+  G: 'g',
+  F: 'f',
+  V: 'v',
+  TH: '\u03b8',
+  DH: '\u00f0',
+  S: 's',
+  Z: 'z',
+  SH: '\u0283',
+  ZH: '\u0292',
+  HH: 'h',
+  L: 'l',
+  R: '\u0279',
+  Y: 'j',
+  W: 'w',
+  CH: '\u02a7',
+  JH: '\u02a4',
+};
+
 const vowelUnicode = {
   ae: { tense: ['e', '\u0259\u032f'], lax: ['\u00e6'] },
   aI: { tense: ['\u0251\u031f', '\u026a\u032f'] },
   aU: { tense: ['a', '\u028a\u032f'] },
   A: { tense: ['\u0251', '\u02d0'], rhotic: ['\u0252', '\u0259\u032f', '\u02de'] },
   2: { lax: ['\u028c\u031f'] },
-  eI: { tense: ['e\u031e\u026a\u032f'] },
-  e: { rhotic: ['e\u0259\u031e\u032f', '\u02de'], lax: ['\u025b'] },
+  eI: { tense: ['e\u031e', '\u026a\u032f'] },
+  e: { rhotic: ['e\u031e', '\u0259\u032f', '\u02de'], lax: ['\u025b'] },
   '3r': { rhotic: ['\u025c', '\u02de', '\u02d0'] },
   '@': { rhoticWeak: ['\u0259', '\u02de', '\u02d0'], laxWeak: ['\u0259'] },
   i: { tense: ['i', '\u02d0'], tenseWeak: ['i', '\u02d0'], rhotic: ['i', '\u0259\u032f', '\u02de'] },
@@ -58,7 +100,11 @@ function utf8Encode(phs) {
         rx += `${pre}${s.join('\u0361').trim()}${sup}`;
       } else {
         let ss;
-        if (p.isVowel) {
+        if (phs.phonemic) {
+          ss = phonemeUnicode[p.phoneme];
+          if (Array.isArray(ss)) ss = ss[+!p.stress];
+          ss = [ss];
+        } else if (p.isVowel) {
           ss = vowelUnicode[p.pho][p.property + (p.weak ? 'Weak' : '')];
         } else {
           ss = [consonantUnicode[p.pho] || p.pho];
@@ -126,8 +172,50 @@ function utf8Encode(phs) {
       return [rxp, rx, rxs.replace('\u02b7\u02b7', '\u02b7')];
     return rx.trim();
   }
-  return `[${enc(phs)}]`;
+  return phs.phonemic ? `/${enc(phs)}/` : `[${enc(phs)}]`;
 }
+
+const phonemeLaTeX = {
+  AE: '\\ae{}',
+  AY: 'aI',
+  AW: 'aU',
+  AA: 'A',
+  AH: ['2', '@'],
+  EY: 'eI',
+  EH: 'e',
+  ER: ['3\\textrhoticity{}', '@\\textrhoticity{}'],
+  IY: ['i:', 'i'],
+  IH: 'I',
+  OW: 'oU',
+  OY: 'OI',
+  AO: 'O',
+  UW: 'u',
+  UH: 'U',
+  M: 'm',
+  N: 'n',
+  NG: 'N',
+  P: 'p',
+  B: 'b',
+  T: 't',
+  D: 'd',
+  K: 'k',
+  G: 'g',
+  F: 'f',
+  V: 'v',
+  TH: 'T',
+  DH: 'D',
+  S: 's',
+  Z: 'z',
+  SH: 'S',
+  ZH: 'Z',
+  HH: 'h',
+  L: 'l',
+  R: '\\*r',
+  Y: 'j',
+  W: 'w',
+  CH: '\\textteshlig{}',
+  JH: '\\textdyoghlig{}',
+};
 
 const vowelLaTeX = {
   ae: { tense: ['e', '\\textsubarch{@}'], lax: ['\\ae{}'] },
@@ -166,7 +254,11 @@ function latexEncode(phs) {
         if (sup) rx += `\\super{${sup}}`;
       } else {
         let ss;
-        if (p.isVowel) {
+        if (phs.phonemic) {
+          ss = phonemeLaTeX[p.phoneme];
+          if (Array.isArray(ss)) ss = ss[+!p.stress];
+          ss = [ss];
+        } else if (p.isVowel) {
           ss = vowelLaTeX[p.pho][p.property + (p.weak ? 'Weak' : '')];
         } else {
           ss = [consonantLaTeX[p.pho] || p.pho];
@@ -232,7 +324,7 @@ function latexEncode(phs) {
       return [rxp, rx.trim(), rxs.replace('ww', 'w')];
     return rx.trim();
   }
-  return `\\textipa{[${enc(phs)}]}`;
+  return phs.phonemic ? `\\textipa{/${enc(phs)}/}` : `\\textipa{[${enc(phs)}]}`;
 }
 
 module.exports = {

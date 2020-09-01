@@ -21,9 +21,13 @@ const vowel = require('./vowel');
 const consonant = require('./consonant');
 const display = require('./display');
 
-module.exports = (ph, word, { aeHint, syllableHint } = {}) => {
+module.exports = (ph, word, phonemic, { aeHint, syllableHint } = {}) => {
   let phs = parse(ph);
   phs = syllable(phs, syllableHint);
+  if (phonemic) {
+    phs.phonemic = true;
+    return phs;
+  }
   phs = vowel(phs, word.toUpperCase(), aeHint);
   phs = consonant(phs, word.toUpperCase());
   return phs;
