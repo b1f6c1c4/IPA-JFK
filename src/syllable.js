@@ -256,8 +256,13 @@ function rPhoneme(phs) {
   const res = [];
   for (let pi = 0; pi < phs.length; pi++) {
     const p = phs[pi];
-    if (!(p.phoneme === 'ER' && pi < phs.length - 1 && phs[pi + 1].isVowel)) {
+    if (p.phoneme !== 'ER') {
       res.push(p);
+      continue;
+    }
+    // Case 0: @r [+ C]
+    if (!(pi < phs.length - 1 && phs[pi + 1].isVowel)) {
+      res.push({ ...p, isVowel: false, weak: undefined, pho: 'r', phono: 'nucleus' });
       continue;
     }
     // Case 1: @r + @r
