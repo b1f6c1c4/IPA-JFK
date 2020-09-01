@@ -151,7 +151,7 @@ function utf8Encode(phs) {
           case 'nucleus':
             if (p.phono !== 'coda') {
               if (p.length && p.length < 1)
-                sp = '\u0203f';
+                sp = '\u203f';
               else
                 sp = ' ';
               if (p.stress === 1)
@@ -316,6 +316,7 @@ function latexEncode(phs) {
               if (p.length && p.length < 1)
                 sp = '\\textbottomtiebar{}';
               else
+                sp = ' ';
               if (p.stress === 1)
                 sp += '"';
               else if (p.stress === 2)

@@ -151,9 +151,13 @@ function syllabify(phs, syllableHint) {
       maybe = [0];
     } else if (i === ints.length - 1) {
       maybe = [int.length];
-    } else if (ints[i - 1].phoneme == 'ER'
+    } else if (ints[i - 1].phoneme === 'ER'
       && ['NG', 'DH', 'ZH', 'HH', 'R', 'Y', 'W'].includes(int[0].phoneme)) {
       maybe = [0];
+    } else if (int.length === 1 && int[0].phoneme === 'N'
+      && ints[i - 1].phoneme === 'AH' && !ints[i - 1].stress
+      && ints[i + 1].phoneme === 'AH' && !ints[i + 1].stress) {
+      maybe = [1];
     } else {
       maybe = [];
       for (let j = 0; j <= int.length; j++) {
@@ -238,15 +242,14 @@ function syllablicize(phs) {
         || pi && phs[pi - 1].phono === 'nucleus') {
         sy = true;
       }
-    }
-    if (['M', 'N', 'L'].includes(phs[pi + 1].phoneme)) {
+    } else if (['M', 'N'].includes(phs[pi + 1].phoneme)) {
       if (pi && phs[pi - 1].phono === 'coda' && !['M', 'N', 'NG'].includes(phs[pi - 1].phoneme)
         || pi && phs[pi - 1].phono === 'nucleus') {
         sy = true;
       }
     }
     if (sy) {
-        res.push({ ...phs[pi + 1], phono: phs[pi + 1].phono === 'coda' ? 'nucleus' : 'onset', stress: pi < phs.length - 2 ? phs[pi + 2].stress : 0 });
+        res.push({ ...phs[pi + 1], phono: phs[pi + 1].phono === 'coda' ? 'nucleus' : 'onset', stress: 0 });
         pi++;
     } else {
       res.push(p);
@@ -264,9 +267,9 @@ function rPhoneme(phs) {
       res.push(p);
       continue;
     }
-    // Case 0: @r [+ C]
+    // Case 0: @r [+ C], 3r [+ C]
     if (!(pi < phs.length - 1 && phs[pi + 1].isVowel)) {
-      res.push({ ...p, isVowel: false, weak: undefined, pho: 'r', phono: 'nucleus' });
+      res.push(p.stress ? p : { ...p, isVowel: false, weak: undefined, pho: 'r', phono: 'nucleus' });
       continue;
     }
     // Case 1: @r + @r

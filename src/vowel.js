@@ -196,6 +196,11 @@ function nasalizeAndLengthen(phs) {
           }
         }
         break;
+      case '@':
+        if (pi && phs[pi - 1].phoneme === 'N' && phs[pi - 1].phono === 'nucleus') {
+          length = 0.7;
+        }
+        break;
     }
     res.push({ ...p, nasalized, length });
   }
