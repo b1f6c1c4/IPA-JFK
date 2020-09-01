@@ -146,7 +146,7 @@ function release(phs) {
       case 'p':
       case 't':
       case 'k':
-        if (pi && phs[pi - 1].pho === 's' && p.phono === 'onset') {
+        if (pi && phs[pi - 1].pho === 's' && phs[pi - 1].phono === 'onset' && p.phono === 'onset') {
           aspirate = 0;
         } else if (pi < phs.length - 1 && fricativePhos.includes(phs[pi + 1].pho)) {
           aspirate = 0;
