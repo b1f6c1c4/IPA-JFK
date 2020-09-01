@@ -177,6 +177,9 @@ function nasalizeAndLengthen(phs) {
     }
     const nasalized = p.isVowel && pi < phs.length - 1 && nasalPhonemes.includes(phs[pi + 1].phoneme);
     let length = 1;
+    if (pi && res[pi - 1].length === 1.5) {
+      length = 0.5;
+    }
     switch (p.pho) {
       case 'A':
         if (p.property === 'tense') length = 2;
@@ -186,16 +189,11 @@ function nasalizeAndLengthen(phs) {
         break;
       case 'i':
         if (p.property === 'tense') {
-          if (pi < phs.length - 1 && phs[pi + 1].pho === '@' && p.weak && phs[pi + 1].weak) {
+          if (pi < phs.length - 1 && phs[pi + 1].pho !== 'I' && p.weak && phs[pi + 1].weak) {
             length = 1.5;
           } else {
             length = 2;
           }
-        }
-        break;
-      case '@':
-        if (p.property === 'lax' && pi && res[pi - 1].length === 1.5) {
-          length = 0.5;
         }
         break;
     }
