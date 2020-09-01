@@ -228,25 +228,29 @@ function syllablicize(phs) {
   const res = [];
   for (let pi = 0; pi < phs.length; pi++) {
     const p = phs[pi];
-    if (p.phoneme === 'AH' && !p.stress && pi < phs.length - 1
-        && ['L'].includes(phs[pi + 1].phoneme)) {
+    if (!(p.phoneme === 'AH' && !p.stress && pi < phs.length - 1 && phs[pi + 1].phono === 'coda')) {
+      res.push(p);
+      continue;
+    }
+    let sy = false;
+    if (['L'].includes(phs[pi + 1].phoneme)) {
       if (pi && phs[pi - 1].phono === 'coda'
         || pi && phs[pi - 1].phono === 'nucleus') {
-        res.push({ ...phs[pi + 1], phono: phs[pi + 1].phono === 'coda' ? 'nucleus' : 'onset', stress: 0 });
-        pi++;
-        continue;
+        sy = true;
       }
     }
-    if (p.phoneme === 'AH' && !p.stress && pi < phs.length - 1
-        && ['M', 'N', 'L'].includes(phs[pi + 1].phoneme)) {
+    if (['M', 'N', 'L'].includes(phs[pi + 1].phoneme)) {
       if (pi && phs[pi - 1].phono === 'coda' && !['M', 'N', 'NG'].includes(phs[pi - 1].phoneme)
         || pi && phs[pi - 1].phono === 'nucleus') {
-        res.push({ ...phs[pi + 1], phono: phs[pi + 1].phono === 'coda' ? 'nucleus' : 'onset', stress: 0 });
-        pi++;
-        continue;
+        sy = true;
       }
     }
-    res.push(p);
+    if (sy) {
+        res.push({ ...phs[pi + 1], phono: phs[pi + 1].phono === 'coda' ? 'nucleus' : 'onset', stress: pi < phs.length - 2 ? phs[pi + 2].stress : 0 });
+        pi++;
+    } else {
+      res.push(p);
+    }
   }
   return res;
 }
