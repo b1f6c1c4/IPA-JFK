@@ -166,10 +166,48 @@ function nasalize(phs) {
   return res;
 }
 
+function nasalizeAndLengthen(phs) {
+  if (!phs) return phs;
+  const res = [];
+  for (let pi = 0; pi < phs.length; pi++) {
+    const p = phs[pi];
+    if (!p.isVowel) {
+      res.push(p);
+      continue;
+    }
+    const nasalized = p.isVowel && pi < phs.length - 1 && nasalPhonemes.includes(phs[pi + 1].phoneme);
+    let length = 1;
+    switch (p.pho) {
+      case 'A':
+        if (p.property === 'tense') length = 2;
+        break;
+      case '3r':
+        length = 2;
+        break;
+      case 'i':
+        if (p.property === 'tense') {
+          if (pi < phs.length - 1 && phs[pi + 1].pho === '@' && p.weak && phs[pi + 1].weak) {
+            length = 1.5;
+          } else {
+            length = 2;
+          }
+        }
+        break;
+      case '@':
+        if (p.property === 'lax' && pi && res[pi - 1].length === 1.5) {
+          length = 0.5;
+        }
+        break;
+    }
+    res.push({ ...p, nasalized, length });
+  }
+  return res;
+}
+
 module.exports = (phs, word, aeHint) => {
   const phs1 = rhoticize(phs);
   const phs2 = tensing(phs1, word, aeHint);
-  const phs3 = nasalize(phs2);
+  const phs3 = nasalizeAndLengthen(phs2);
   return phs3;
 };
 module.exports.default = module.exports;

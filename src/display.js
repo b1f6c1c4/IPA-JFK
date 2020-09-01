@@ -61,13 +61,13 @@ const vowelUnicode = {
   ae: { tense: ['e', '\u0259\u032f'], lax: ['\u00e6'] },
   aI: { tense: ['\u0251\u031f', '\u026a\u032f'] },
   aU: { tense: ['a', '\u028a\u032f'] },
-  A: { tense: ['\u0251', '\u02d0'], rhotic: ['\u0252', '\u0259\u032f', '\u02de'] },
+  A: { tense: ['\u0251'], rhotic: ['\u0252', '\u0259\u032f', '\u02de'] },
   2: { lax: ['\u028c\u031f'] },
   eI: { tense: ['e\u031e', '\u026a\u032f'] },
   e: { rhotic: ['e\u031e', '\u0259\u032f', '\u02de'], lax: ['\u025b'] },
-  '3r': { rhotic: ['\u025c', '\u02de', '\u02d0'] },
-  '@': { rhoticWeak: ['\u0259', '\u02de', '\u02d0'], laxWeak: ['\u0259'] },
-  i: { tense: ['i', '\u02d0'], tenseWeak: ['i', '\u02d0'], rhotic: ['i', '\u0259\u032f', '\u02de'] },
+  '3r': { rhotic: ['\u025c', '\u02de'] },
+  '@': { rhoticWeak: ['\u0259', '\u02de'], laxWeak: ['\u0259'] },
+  i: { tense: ['i'], tenseWeak: ['i'], rhotic: ['i', '\u0259\u032f', '\u02de'] },
   I: { lax: ['\u026a\u0308'], laxWeak: ['\u0258'] },
   oU: { tense: ['o\u031e', '\u028a\u032f'] },
   OI: { tense: ['o\u031e', '\u026a\u032f'] },
@@ -109,7 +109,7 @@ function utf8Encode(phs) {
         } else {
           ss = [consonantUnicode[p.pho] || p.pho];
         }
-        const mutate = (f) => { ss = ss.map((s) => (s === '\u02de' || s === '\u02d0') ? s : f(s)); };
+        const mutate = (f) => { ss = ss.map((s) => (s === '\u02de') ? s : f(s)); };
         if (p.velarized > 0.5)
           mutate((s) => s === 'l\u033a' ? '\u026b\u033a' : `${s}\u0334`);
         if (p.devoiced)
@@ -122,6 +122,10 @@ function utf8Encode(phs) {
           mutate((s) => `${s}\u02d4`); // Should be \u031d
         if (p.phono === 'nucleus' && !p.isVowel)
           mutate((s) => `${s}\u0329`);
+        if (p.length < 0.8)
+          mutate((s) => `${s}\u032f`);
+        else if (p.length >= 1.8)
+          ss = [...ss, '\u02d0'];
         let s = ss.join('');
         if (p.release === 'silent')
           s += '\u02fa';
@@ -144,7 +148,8 @@ function utf8Encode(phs) {
           case 'coda':
           case 'nucleus':
             if (p.phono !== 'coda') {
-              sp = ' ';
+              if (!p.length || p.length >= 1)
+                sp = ' ';
               if (p.stress === 1)
                 sp += '\u02c8';
               else if (p.stress === 2)
@@ -221,13 +226,13 @@ const vowelLaTeX = {
   ae: { tense: ['e', '\\textsubarch{@}'], lax: ['\\ae{}'] },
   aI: { tense: ['\\|+A', '\\textsubarch{I}'] },
   aU: { tense: ['a', '\\textsubarch{U}'] },
-  A: { tense: ['A', ':'], rhotic: ['6', '\\textsubarch{@}', '\\textrhoticity'] },
+  A: { tense: ['A'], rhotic: ['6', '\\textsubarch{@}', '\\textrhoticity'] },
   2: { lax: ['\\|+2'] },
   eI: { tense: ['\\|`e\\textsubarch{I}'] },
   e: { rhotic: ['\\|`e\\textsubarch{@}', '\\textrhoticity'], lax: ['E'] },
-  '3r': { rhotic: ['3', '\\textrhoticity', ':'] },
-  '@': { rhoticWeak: ['@', '\\textrhoticity', ':'], laxWeak: ['@'] },
-  i: { tense: ['i', ':'], tenseWeak: ['i', ':'], rhotic: ['i', '\\textsubarch{@}', '\\textrhoticity'] },
+  '3r': { rhotic: ['3', '\\textrhoticity'] },
+  '@': { rhoticWeak: ['@', '\\textrhoticity'], laxWeak: ['@'] },
+  i: { tense: ['i'], tenseWeak: ['i'], rhotic: ['i', '\\textsubarch{@}', '\\textrhoticity'] },
   I: { lax: ['\\"I'], laxWeak: ['9'] },
   oU: { tense: ['\\|`o', '\\textsubarch{U}'] },
   OI: { tense: ['\\|`o', '\\textsubarch{I}'] },
@@ -263,7 +268,7 @@ function latexEncode(phs) {
         } else {
           ss = [consonantLaTeX[p.pho] || p.pho];
         }
-        const mutate = (f) => { ss = ss.map((s) => (s === '\\textrhoticity' || s === ':') ? s : f(s)); };
+        const mutate = (f) => { ss = ss.map((s) => (s === '\\textrhoticity') ? s : f(s)); };
         if (p.velarized > 0.5)
           mutate((s) => `\\|~{${s}}`);
         if (p.devoiced)
@@ -276,6 +281,10 @@ function latexEncode(phs) {
           mutate((s) => `\\textraising{${s}}`);
         if (p.phono === 'nucleus' && !p.isVowel)
           mutate((s) => `\\s{${s}}`);
+        if (p.length < 0.8)
+          mutate((s) => `\\textsubarch{${s}}`);
+        else if (p.length >= 1.8)
+          ss = [...ss, ':'];
         let s = ss.join('');
         if (p.release === 'silent')
           s += '\\textcorner{}';
