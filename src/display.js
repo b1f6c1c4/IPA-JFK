@@ -116,6 +116,8 @@ function utf8Encode(phs) {
           mutate((s) => `${s}\u030a`); // Should be \u0325
         if (p.nasalized)
           mutate((s) => `${s}\u0303`);
+        if (p.short)
+          mutate((s) => `${s}\u0306`);
         if (p.retracted)
           mutate((s) => `${s}\u0320`);
         if (p.raised)
@@ -148,7 +150,9 @@ function utf8Encode(phs) {
           case 'coda':
           case 'nucleus':
             if (p.phono !== 'coda') {
-              if (!p.length || p.length >= 1)
+              if (p.length && p.length < 1)
+                sp = '\u0203f';
+              else
                 sp = ' ';
               if (p.stress === 1)
                 sp += '\u02c8';
@@ -275,6 +279,8 @@ function latexEncode(phs) {
           mutate((s) => `\\r{${s}}`);
         if (p.nasalized)
           mutate((s) => `\\~{${s}}`);
+        if (p.short)
+          mutate((s) => `\\u{${s}}`);
         if (p.retracted)
           mutate((s) => `\\textsubbar{${s}}`);
         if (p.raised)
@@ -307,7 +313,9 @@ function latexEncode(phs) {
           case 'coda':
           case 'nucleus':
             if (p.phono !== 'coda') {
-              sp = ' ';
+              if (p.length && p.length < 1)
+                sp = '\\textbottomtiebar{}';
+              else
               if (p.stress === 1)
                 sp += '"';
               else if (p.stress === 2)
