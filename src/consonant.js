@@ -207,7 +207,8 @@ function flap(phs) {
   for (let pi = 0; pi < phs.length; pi++) {
     const p = phs[pi];
     if (['t', 'd'].includes(p.pho)) {
-      if (pi && phs[pi - 1].isVowel && pi < phs.length - 1 && phs[pi + 1].isVowel && !phs[pi + 1].stress) {
+      if (pi && phs[pi - 1].isVowel && pi < phs.length - 1 && (phs[pi + 1].isVowel && !phs[pi + 1].stress
+        || phs[pi + 1].pho === 'r' && phs[pi + 1].phono === 'nucleus')) {
         res.push({ ...p, pho: 'R' });
         continue;
       }
