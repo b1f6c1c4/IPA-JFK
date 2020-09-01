@@ -128,7 +128,7 @@ function tensing(phs, word, aeHint) {
       case 'AH': res.push({ property: 'lax',    ...p, pho: p.stress ? '2' : '@', weak: !p.stress }); break;
       case 'EY': res.push({ property: 'tense',  ...p, pho: 'eI' }); break;
       case 'EH': res.push({ property: 'lax',    ...p, pho: 'e' }); break;
-      case 'ER': res.push({ property: 'rhotic', ...p, pho: p.stress ? '3r' : '@', weak: !p.stress }); break;
+      case 'ER': res.push({ property: 'rhotic', pho: p.stress ? '3r' : '@', weak: !p.stress, ...p }); break;
       case 'IY': res.push({ property: 'tense',  ...p, pho: 'i', weak: !p.stress }); break;
       case 'IH': res.push({ property: 'lax',    ...p, pho: p.property ? 'i' : 'I', weak: !p.property && !p.stress }); break;
       case 'OW':

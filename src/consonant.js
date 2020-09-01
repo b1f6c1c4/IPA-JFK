@@ -27,7 +27,7 @@ function labializeRetractVelarize(phs, word) {
     labialized |= roundedPhonemes.includes(p.phoneme);
     labialized |= pi < phs.length - 1 && roundPhonemes.includes(phs[pi + 1].phoneme);
     let retracted = false;
-    retracted |= p.phoneme === 'R';
+    retracted |= p.phoneme === 'R' || p.pho === 'r';
     retracted |= ['T', 'D'].includes(p.phoneme) && pi < phs.length - 1 && phs[pi + 1].phoneme === 'R';
     let velarized = 0;
     if (p.phoneme === 'L') {
@@ -88,7 +88,7 @@ function splitAffricates(phs) {
         if (p.isVowel)
           res.push(p);
         else
-          res.push({ ...p, pho: singlePhonemeNames[p.phoneme] });
+          res.push({ pho: singlePhonemeNames[p.phoneme], ...p });
         break;
     }
   }

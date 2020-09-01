@@ -223,19 +223,6 @@ function syllabify(phs, syllableHint) {
   return res;
 }
 
-function rPhoneme(phs) {
-  if (!phs) return phs;
-  const res = [];
-  for (let pi = 0; pi < phs.length; pi++) {
-    const p = phs[pi];
-    res.push(p);
-    if (p.phoneme === 'ER' && pi < phs.length - 1 && phs[pi + 1].isVowel) {
-      res.push({ phoneme: 'R', isVowel: false, phono: 'onset', stress: phs[pi + 1].stress });
-    }
-  }
-  return res;
-}
-
 function syllablicize(phs) {
   if (!phs) return phs;
   const res = [];
@@ -264,11 +251,60 @@ function syllablicize(phs) {
   return res;
 }
 
+function rPhoneme(phs) {
+  if (!phs) return phs;
+  const res = [];
+  for (let pi = 0; pi < phs.length; pi++) {
+    const p = phs[pi];
+    if (!(p.phoneme === 'ER' && pi < phs.length - 1 && phs[pi + 1].isVowel)) {
+      res.push(p);
+      continue;
+    }
+    // Case 1: @r + @r
+    if (!p.stress && !phs[pi + 1].stress && phs[pi + 1].phoneme === 'ER') {
+      let t;
+      if (!pi) {
+        t = undefined;
+      } else if (phs[pi - 1].isVowel) {
+        t = undefined;
+      } else if (['M', 'NG', 'G'].includes(phs[pi - 1].phoneme)) {
+        t = undefined;
+      } else if (!['T', 'D'].includes(phs[pi - 1].phoneme)) {
+        t = 1;
+      } else if (pi === 1) {
+        t = undefined;
+      } else if (phs[pi - 2].isVowel) {
+        t = phs[pi - 1].phoneme === 'T' ? 2 : 3;
+      } else {
+        t = phs[pi - 1].phoneme === 'T' ? 1 : 2;
+      }
+      if (!t) {
+        console.error('Warning: cannot determine ER in', int.map((n) => n.phoneme).join(' '));
+        t = 1;
+      }
+      res.push(t >= 2 ? p : { ...p, isVowel: false, weak: undefined, pho: 'r', phono: 'nucleus' });
+      res.push(t <= 2 ? phs[pi + 1] : { ...phs[pi + 1], isVowel: false, weak: undefined, pho: 'r', phono: 'nucleus' });
+    }
+    // Case 2: 3r + @r
+    else if (p.stress && !phs[pi + 1].stress && phs[pi + 1].phoneme === 'ER') {
+      res.push(p);
+      res.push({ ...phs[pi + 1], isVowel: false, weak: undefined, pho: 'r', phono: 'nucleus' });
+    }
+    // Case 3: 3r + V, @r + V
+    else {
+      res.push(p);
+      res.push({ phoneme: 'R', isVowel: false, pho: 'r', phono: 'onset', stress: phs[pi + 1].stress });
+    }
+    pi++;
+  }
+  return res;
+}
+
 module.exports = (phs, syllableHint, phonemic) => {
   const phs1 = syllabify(phs, syllableHint);
-  const phs2 = rPhoneme(phs1);
-  if (phonemic) return phs2;
-  const phs3 = syllablicize(phs2);
+  if (phonemic) return phs1;
+  const phs2 = syllablicize(phs1);
+  const phs3 = rPhoneme(phs2);
   return phs3;
 };
 module.exports.default = module.exports;

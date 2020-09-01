@@ -23,7 +23,7 @@ const phonemeUnicode = {
   AH: ['\u028c', '\u0259'],
   EY: 'e\u026a',
   EH: 'e',
-  ER: ['\u025c\u02de\u02d0', '\u0259\u02de\u02d0'],
+  ER: ['\u025c\u02de\u02d0', '\u0259\u02de'],
   IY: ['i\u02d0', 'i'],
   IH: '\u026a',
   OW: 'o\u028a',
