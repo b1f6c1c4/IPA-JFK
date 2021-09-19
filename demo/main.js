@@ -16,7 +16,7 @@
  */
 
 const db = require('../db');
-const cmu = require('url:../data/cmudict.txt');
+const cmu = require('../data/cmudict.txt');
 
 function update() {
   document.getElementById('results').innerHTML = '';

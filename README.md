@@ -38,7 +38,7 @@ yarn demo
 ## CLI Usage
 
 ```bash
-npx jfk [--unicode|--html|--latex] [--phonemic] <word> [<phoneme>...]
+jfk [--unicode|--html|--latex] [--phonemic] <word> [<phoneme>...]
 ```
 
 - Output format:

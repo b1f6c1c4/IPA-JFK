@@ -7,9 +7,9 @@
     "jfk": "./bin/jfk.js"
   },
   "scripts": {
-    "prepare": "./scripts/download.js",
+    "prepare": "node ./scripts/download.js",
     "lint": "eslint index.js db.js src/",
-    "start": "./bin/jfk.js",
+    "start": "node ./bin/jfk.js",
     "demo": "parcel demo/index.html"
   },
   "repository": {
@@ -39,7 +39,6 @@
   "devDependencies": {
     "eslint": "^7.23.0",
     "mkdirp": "^1.0.4",
-    "parcel": "^2.0.0-rc.0",
-    "yarn": "^1.22.11"
+    "parcel-bundler": "^1.12.5"
   }
 }
