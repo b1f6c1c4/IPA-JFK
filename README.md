@@ -2,25 +2,43 @@
 
 > IPA narrow transcription of English words in New York City accent
 
-## Demo Website
+## Online Demo Website
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/6cc76b39-d72c-4d05-9959-0d57d6b8b6e4/deploy-status)](https://app.netlify.com/sites/ipa-jfk/deploys)
 
 You can lookup words on our hassle-free **[Demo Website](https://jfk.b1f6c1c4.info/)**!
 
-## Install
+## Prerequisites
+
+- Node.js 12.x+
+- Yarn (recommended)
+- [Parcel](https://parceljs.org/getting_started.html) (for demo)
+
+## Install CLI
 
 ```bash
 # For cli or global usage:
 npm i -g ipa-jfk
+# or:
+yarn global add ipa-jfk
+
 # For local usage:
 npm i ipa-jfk
+# or:
+yarn add ipa-jfk
+```
+
+## Local Demo
+
+```bash
+yarn demo
+# A server will be running at http://localhost:1234
 ```
 
 ## CLI Usage
 
 ```bash
-jfk [--unicode|--html|--latex] [--phonemic] <word> [<phoneme>...]
+npx jfk [--unicode|--html|--latex] [--phonemic] <word> [<phoneme>...]
 ```
 
 - Output format:

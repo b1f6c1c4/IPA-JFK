@@ -38,6 +38,8 @@
   },
   "devDependencies": {
     "eslint": "^7.23.0",
-    "mkdirp": "^1.0.4"
+    "mkdirp": "^1.0.4",
+    "parcel": "^2.0.0-rc.0",
+    "yarn": "^1.22.11"
   }
 }
