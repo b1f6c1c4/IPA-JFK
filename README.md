@@ -12,7 +12,7 @@ You can lookup words on our hassle-free **[Demo Website](https://jfk.b1f6c1c4.in
 
 - Node.js 12.x+
 - Yarn (recommended)
-- [Parcel](https://parceljs.org/getting_started.html) (for demo)
+- [Parcel](https://v2.parceljs.org/) (for demo)
 
 ## Install CLI
 
@@ -31,6 +31,8 @@ yarn add ipa-jfk
 ## Local Demo
 
 ```bash
+npm run demo
+# or:
 yarn demo
 # A server will be running at http://localhost:1234
 ```
