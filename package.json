@@ -7,9 +7,9 @@
     "jfk": "./bin/jfk.js"
   },
   "scripts": {
-    "prepare": "node ./scripts/download.js",
+    "prepare": "./scripts/download.js",
     "lint": "eslint index.js db.js src/",
-    "start": "node ./bin/jfk.js",
+    "start": "./bin/jfk.js",
     "demo": "parcel demo/index.html",
     "generate": "parcel build demo/index.html"
   },
