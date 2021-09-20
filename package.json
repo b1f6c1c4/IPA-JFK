@@ -43,6 +43,7 @@
   "devDependencies": {
     "eslint": "^7.23.0",
     "mkdirp": "^1.0.4",
-    "parcel": "^2.0.0-rc.0"
+    "parcel": "^2.0.0-rc.0",
+    "postcss-selector-parser": "^6.0.6"
   }
 }
