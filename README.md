@@ -11,7 +11,7 @@ You can lookup words on our hassle-free **[Demo Website](https://jfk.b1f6c1c4.in
 ## Prerequisites
 
 - Node.js 12.x+
-- Yarn (recommended)
+- npm or yarn
 - [Parcel](https://v2.parceljs.org/) (for demo)
 
 ## Install CLI

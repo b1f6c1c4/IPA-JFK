@@ -13,6 +13,9 @@
     "demo": "parcel demo/index.html",
     "generate": "parcel build demo/index.html"
   },
+  "targets": {
+    "main": false
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/b1f6c1c4/IPA-JFK.git"
@@ -40,6 +43,6 @@
   "devDependencies": {
     "eslint": "^7.23.0",
     "mkdirp": "^1.0.4",
-    "parcel-bundler": "^1.12.5"
+    "parcel": "^2.0.0-rc.0"
   }
 }
