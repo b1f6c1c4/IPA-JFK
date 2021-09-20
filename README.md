@@ -30,7 +30,7 @@ yarn add ipa-jfk
 
 ## Local Demo
 
-Addition instruction for Windows users - remember to amend `scripts.prepare` and `scripts.start` fields in `package.json` prior to running:
+Additional instruction for Windows users: Remember to amend `scripts.prepare` and `scripts.start` fields in `package.json` prior to running:
 
 > "prepare": "node ./scripts/download.js"  
 > ...  
