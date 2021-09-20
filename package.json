@@ -10,7 +10,11 @@
     "prepare": "./scripts/download.js",
     "lint": "eslint index.js db.js src/",
     "start": "./bin/jfk.js",
-    "demo": "parcel demo/index.html"
+    "demo": "parcel demo/index.html",
+    "generate": "parcel build demo/index.html"
+  },
+  "targets": {
+    "main": false
   },
   "repository": {
     "type": "git",
@@ -38,6 +42,8 @@
   },
   "devDependencies": {
     "eslint": "^7.23.0",
-    "mkdirp": "^1.0.4"
+    "mkdirp": "^1.0.4",
+    "parcel": "^2.0.0-rc.0",
+    "postcss-selector-parser": "^6.0.6"
   }
 }

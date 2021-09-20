@@ -2,19 +2,50 @@
 
 > IPA narrow transcription of English words in New York City accent
 
-## Demo Website
+## Online Demo Website
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/6cc76b39-d72c-4d05-9959-0d57d6b8b6e4/deploy-status)](https://app.netlify.com/sites/ipa-jfk/deploys)
 
 You can lookup words on our hassle-free **[Demo Website](https://jfk.b1f6c1c4.info/)**!
 
-## Install
+## Prerequisites
+
+- Node.js 12.18.3 or 14.x+
+- npm or yarn
+- [Parcel](https://v2.parceljs.org/) (for demo and deployment usage; NOT the DEPRECATED `parcel-bundler`!!!)
+
+## Install CLI
 
 ```bash
 # For cli or global usage:
 npm i -g ipa-jfk
+# or:
+yarn global add ipa-jfk
+
 # For local usage:
 npm i ipa-jfk
+# or:
+yarn add ipa-jfk
+```
+
+## Local Demo
+
+Additional instruction for Windows users: Remember to amend `scripts.prepare` and `scripts.start` fields in `package.json` prior to running:
+
+> "prepare": "node ./scripts/download.js"  
+> ...  
+> "start": "node ./bin/jfk.js"
+
+```bash
+npm i
+# or:
+yarn install
+```
+```bash
+npm run demo
+# or:
+yarn demo
+# A server will be running at http://localhost:1234
 ```
 
 ## CLI Usage
