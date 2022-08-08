@@ -26,7 +26,7 @@ const { argv } = yargs
   .strict()
   .help('h')
   .alias('h', 'help')
-  .showHelpOnFail(false, 'Hint: You may need this: findbug --help.')
+  .showHelpOnFail(false, 'Hint: You may need this: ipa-jfk --help.')
   .version()
   .option('unicode', {
     describe: 'Output UTF-8 encoded IPA in unicode.',
