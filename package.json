@@ -36,14 +36,14 @@
   },
   "homepage": "https://github.com/b1f6c1c4/IPA-JFK#readme",
   "dependencies": {
-    "escape-string-regexp": "^4.0.0",
+    "escape-string-regexp": "^5.0.0",
     "htmlencode": "0.0.4",
-    "yargs": "^16.2.0"
+    "yargs": "^17.5.1"
   },
   "devDependencies": {
-    "eslint": "^7.23.0",
+    "eslint": "^8.21.0",
     "mkdirp": "^1.0.4",
-    "parcel": "^2.0.0-rc.0",
-    "postcss-selector-parser": "^6.0.6"
+    "parcel": "^2.7.0",
+    "postcss-selector-parser": "^6.0.10"
   }
 }
