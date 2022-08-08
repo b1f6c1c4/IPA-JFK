@@ -17,7 +17,7 @@
 
 const vowels = ['AE', 'AY', 'AW', 'AA', 'AH', 'EY', 'EH', 'ER', 'AH', 'IY', 'IH', 'OW', 'OY', 'AO', 'UW', 'UH'];
 
-module.exports = (phst) => phst && phst.split(/\s+/).map((ph) => {
+export default (phst) => phst && phst.split(/\s+/).map((ph) => {
   const [, p, s] = ph.match(/^([A-Z][A-Z]?)([0-2]?)$/);
   const o = {
     phoneme: p,
@@ -26,4 +26,3 @@ module.exports = (phst) => phst && phst.split(/\s+/).map((ph) => {
   if (o.isVowel) o.stress = +s;
   return o;
 });
-module.exports.default = module.exports;

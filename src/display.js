@@ -88,7 +88,7 @@ const consonantUnicode = {
   c: 'c\u0327',
 };
 
-function utf8Encode(phs) {
+export function utf8Encode(phs) {
   let state = 'coda';
   function enc(ph, split) {
     let rxp = '';
@@ -250,7 +250,7 @@ const consonantLaTeX = {
   c: '\\c{c}',
 };
 
-function latexEncode(phs) {
+export function latexEncode(phs) {
   let state = 'coda';
   function enc(ph, split) {
     let rxp = '';
@@ -344,9 +344,3 @@ function latexEncode(phs) {
   }
   return phs.phonemic ? `\\textipa{/${enc(phs)}/}` : `\\textipa{[${enc(phs)}]}`;
 }
-
-module.exports = {
-  utf8Encode,
-  latexEncode,
-};
-module.exports.default = module.exports;

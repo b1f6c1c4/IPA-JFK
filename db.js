@@ -15,13 +15,13 @@
  * along with IPA-JFK.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-const escapeStringRegexp = require('escape-string-regexp');
-const core = require('./src');
+import escapeStringRegexp from 'escape-string-regexp';
+import core from './src/index.js';
 
 let dictF;
 let dict;
 
-function cache() {
+export function cache() {
   if (!dictF) throw new Error('No database loaded.');
   dict = {};
   dictF.split('\n').forEach((l) => {
@@ -40,7 +40,7 @@ function cache() {
 
 const norm = (w) => w.trim().toUpperCase().replace(/ /g, '-');
 
-function query(word) {
+export function query(word) {
   const w = norm(word);
   if (dict) return dict[w];
   if (!dictF) throw new Error('No database loaded.');
@@ -55,11 +55,6 @@ function query(word) {
   return res;
 }
 
-module.exports = {
-  load: (file) => { dictF = file.replace(/_/g, '-'); },
-  cache,
-  query,
-  process: (ph, word, phonemic, hints) => core(ph.trim(), norm(word), phonemic, hints),
-  display: core.display
-};
-module.exports.default = module.exports;
+export const load = (file) => { dictF = file.replace(/_/g, '-'); };
+export const process = (ph, word, phonemic, hints) => core(ph.trim(), norm(word), phonemic, hints);
+export { display } from './src/index.js';

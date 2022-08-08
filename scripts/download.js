@@ -17,9 +17,9 @@
  * along with IPA-JFK.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-const mkdirp = require('mkdirp');
-const fs = require('fs');
-const https = require('https');
+import mkdirp from 'mkdirp';
+import fs from 'fs';
+import https from 'https';
 
 mkdirp.sync('data');
 

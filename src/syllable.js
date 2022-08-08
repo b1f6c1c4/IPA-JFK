@@ -313,11 +313,10 @@ function rPhoneme(phs) {
   return res;
 }
 
-module.exports = (phs, syllableHint, phonemic) => {
+export default (phs, syllableHint, phonemic) => {
   const phs1 = syllabify(phs, syllableHint);
   if (phonemic) return phs1;
   const phs2 = syllablicize(phs1);
   const phs3 = rPhoneme(phs2);
   return phs3;
 };
-module.exports.default = module.exports;

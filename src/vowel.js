@@ -207,10 +207,9 @@ function nasalizeAndLengthen(phs) {
   return res;
 }
 
-module.exports = (phs, word, aeHint) => {
+export default (phs, word, aeHint) => {
   const phs1 = rhoticize(phs);
   const phs2 = tensing(phs1, word, aeHint);
   const phs3 = nasalizeAndLengthen(phs2);
   return phs3;
 };
-module.exports.default = module.exports;

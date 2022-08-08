@@ -15,21 +15,15 @@
  * along with IPA-JFK.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-const { htmlEncode } = require('htmlencode');
-const path = require('path');
-const fs = require('fs');
-const db = require('./db');
+import htmlencode from 'htmlencode';
+const { htmlEncode } = htmlencode;
+import path from 'node:path';
+import fs from 'node:fs';
+import * as db from './db.js';
 
-const fn = path.join(__dirname, 'data', 'cmudict.txt');
+db.load(fs.readFileSync(new URL('./data/cmudict.txt', import.meta.url), 'utf-8'));
 
-db.load(fs.readFileSync(fn, 'utf-8'));
-
-module.exports = {
-  cacheDatabase: db.cache,
-  queryDatabase: db.query,
-  process: db.process,
-  unicode: db.display.utf8Encode,
-  html: (phs) => htmlEncode(db.display.utf8Encode(phs)),
-  latex: db.display.latexEncode,
-};
-module.exports.default = module.exports;
+export { cache as cacheDatabase, query as queryDatabase, process } from './db.js';
+export const unicode = db.display.utf8Encode;
+export const html = (phs) => htmlEncode(db.display.utf8Encode(phs));
+export const latex = db.display.latexEncode;

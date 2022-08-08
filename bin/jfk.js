@@ -17,13 +17,13 @@
  * along with IPA-JFK.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-const yargs = require('yargs');
-const jfk = require('..');
+import yargs from 'yargs';
+import { hideBin } from 'yargs/helpers';
+import * as jfk from '../index.js';
 
-const { argv } = yargs
+const { argv } = yargs(hideBin(process.argv))
   .scriptName('jfk')
   .usage('$0 [<options>] <word> [<phoneme>...]')
-  .strict()
   .help('h')
   .alias('h', 'help')
   .showHelpOnFail(false, 'Hint: You may need this: ipa-jfk --help.')

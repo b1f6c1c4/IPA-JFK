@@ -15,13 +15,13 @@
  * along with IPA-JFK.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-const parse = require('./parse');
-const syllable = require('./syllable');
-const vowel = require('./vowel');
-const consonant = require('./consonant');
-const display = require('./display');
+import parse from './parse.js';
+import syllable from './syllable.js';
+import vowel from './vowel.js';
+import consonant from './consonant.js';
+export * as display from './display.js';
 
-module.exports = (ph, word, phonemic, { aeHint, syllableHint } = {}) => {
+export default (ph, word, phonemic, { aeHint, syllableHint } = {}) => {
   let phs = parse(ph);
   phs = syllable(phs, syllableHint, phonemic);
   if (phonemic) {
@@ -32,5 +32,3 @@ module.exports = (ph, word, phonemic, { aeHint, syllableHint } = {}) => {
   phs = consonant(phs, word.toUpperCase());
   return phs;
 };
-module.exports.display = display;
-module.exports.default = module.exports;

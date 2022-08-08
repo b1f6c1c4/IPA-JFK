@@ -234,7 +234,7 @@ function mergeAffricates(phs) {
   return res;
 }
 
-module.exports = (phs, word) => {
+export default (phs, word) => {
   const phs1 = labializeRetractVelarize(phs, word);
   const phs2 = splitAffricates(phs1);
   const phs3 = mergingElide(phs2, word);
@@ -243,4 +243,3 @@ module.exports = (phs, word) => {
   const phs6 = mergeAffricates(phs5);
   return phs6;
 };
-module.exports.default = module.exports;

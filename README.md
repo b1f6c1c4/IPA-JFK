@@ -10,22 +10,18 @@ You can lookup words on our hassle-free **[Demo Website](https://jfk.b1f6c1c4.in
 
 ## Prerequisites
 
-- Node.js 12.18.3 or 14.x+
-- npm or yarn
-- [Parcel](https://v2.parceljs.org/) (for demo and deployment usage; NOT the DEPRECATED `parcel-bundler`!!!)
+- Node.js
+- npm
+- [Parcel](https://v2.parceljs.org/) (for demo and deployment usage)
 
 ## Install CLI
 
 ```bash
 # For cli or global usage:
 npm i -g ipa-jfk
-# or:
-yarn global add ipa-jfk
 
 # For local usage:
 npm i ipa-jfk
-# or:
-yarn add ipa-jfk
 ```
 
 ## Local Demo
@@ -38,13 +34,9 @@ Additional instruction for Windows users: Remember to amend `scripts.prepare` an
 
 ```bash
 npm i
-# or:
-yarn install
 ```
 ```bash
 npm run demo
-# or:
-yarn demo
 # A server will be running at http://localhost:1234
 ```
 
@@ -65,7 +57,7 @@ jfk [--unicode|--html|--latex] [--phonemic] <word> [<phoneme>...]
 ## Library Usage
 
 ```js
-const jfk = require('ipa-jfk');
+impotrt * as jfk from 'ipa-jfk';
 
 // Cache the whole database to speed up future lookups
 jfk.cacheDatabase();
